@@ -14,8 +14,8 @@ import javax.swing.JTable;
  */
 public class Data_Manager {
     // files
-    private static final String student_file = "model\\CSVs\\Students.csv";
-    private static final String course_file = "model\\CSVs\\Courses.csv";
+    private static final String student_file = "model\\CSV_Files\\Students.csv";
+    private static final String course_file = "model\\CSV_Files\\Courses.csv";
 
     private static ArrayList<Course> courses = new ArrayList<>(); // store the registered courses
     private static String[] course_column;

@@ -1,11 +1,11 @@
 import javax.swing.SwingUtilities;
 
-import view.SSIS_Display;
+import view.SSISMainDisplay;
 
 public class Main{
     public static void main(String[] args) {
         try {
-            SwingUtilities.invokeLater(SSIS_Display :: new);
+            SwingUtilities.invokeLater(SSISMainDisplay :: new);
         } catch (Exception e){
             System.out.println(e.toString());
         }
