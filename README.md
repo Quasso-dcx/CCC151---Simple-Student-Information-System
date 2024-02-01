@@ -4,12 +4,12 @@
 > This is the repository for the 2nd Assignment for the subject CCC151.
 > 
 > ## Timeframe
-> Deadline: Feb. 23, 2024
-> Starting: Jan. 31, 2024
+> Deadline: Feb. 23, 2024 <br>
+> Starting: Jan. 31, 2024 
 > 
 > ## Author
-> Caine Ivan R. Bautista (2022-0378) 
-> 2nd Year - BS Computer Science
+> Caine Ivan R. Bautista (2022-0378) <br>
+> 2nd Year - BS Computer Science 
 
 # Instructions
 - Avoid directly editing/manipulating the CSV files to prevent errors.
