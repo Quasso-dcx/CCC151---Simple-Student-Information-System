@@ -51,7 +51,7 @@ public class SSISMainDisplay extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 int confirm = JOptionPane.showOptionDialog(
-                        null, "Do you want to save your changes?",
+                        null, "Exiting.\nDo you want to save your changes?",
                         "Exit Confirmation", JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
@@ -98,6 +98,7 @@ public class SSISMainDisplay extends JFrame {
         students_button.setBounds(850, PADDING_HEIGHT * 2, 120, 30);
         students_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
         students_button.setFocusable(false);
+        students_button.setToolTipText("Display the table listing the students registered.");
         students_button.addActionListener(e -> {
             // to prevent confusion to what table currently displayed
             students_button.setEnabled(false);
@@ -114,6 +115,7 @@ public class SSISMainDisplay extends JFrame {
         courses_button.setBounds(1000, PADDING_HEIGHT * 2, 120, 30);
         courses_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
         courses_button.setFocusable(false);
+        courses_button.setToolTipText("Display the table listing the courses registered.");
         courses_button.addActionListener(e -> {
             // to prevent confusion to what table currently displayed
             courses_button.setEnabled(false);
@@ -145,6 +147,7 @@ public class SSISMainDisplay extends JFrame {
         add_button.setBounds(PADDING_WIDTH * 1 + 650, PADDING_HEIGHT * 3, 120, 30);
         add_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         add_button.setFocusable(false);
+        add_button.setToolTipText("Add item to the table.");
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,6 +162,7 @@ public class SSISMainDisplay extends JFrame {
         edit_button.setBounds(PADDING_WIDTH * 2 + 650 + 120 * 1, PADDING_HEIGHT * 3, 120, 30);
         edit_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         edit_button.setFocusable(false);
+        edit_button.setToolTipText("Edit the selected row in the table.");
         edit_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,6 +190,7 @@ public class SSISMainDisplay extends JFrame {
         delete_button.setBounds(PADDING_WIDTH * 3 + 650 + 120 * 2, PADDING_HEIGHT * 3, 120, 30);
         delete_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         delete_button.setFocusable(false);
+        delete_button.setToolTipText("Delete the selected row in the table.");
         delete_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -213,6 +218,7 @@ public class SSISMainDisplay extends JFrame {
         save_button.setBounds(PADDING_WIDTH * 4 + 650 + 120 * 3, PADDING_HEIGHT * 3, 130, 30);
         save_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         save_button.setFocusable(false);
+        save_button.setToolTipText("Save the tables to their respective CSV files.");
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -112,6 +112,7 @@ public class Add_Dialog extends JDialog {
         layout_Constraints.gridy = 9;
         layout_Constraints.gridwidth = 2;
         add_button.setFocusable(false);
+        add_button.setToolTipText("Add the item to the table.");
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -244,6 +245,7 @@ public class Add_Dialog extends JDialog {
         // arranging the button and setting its functionality
         add_button = new JButton("Add Item");
         add_button.setFocusable(false);
+        add_button.setToolTipText("Add the item to the table.");
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
