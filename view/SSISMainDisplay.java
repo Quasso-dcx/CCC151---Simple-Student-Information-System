@@ -27,6 +27,8 @@ public class SSISMainDisplay extends JFrame {
     private JButton edit_button;
     private JButton delete_button;
     private JButton save_button;
+    private JButton students_button;
+    private JButton courses_button;
 
     // data tables
     private JTable student_table;
@@ -92,11 +94,15 @@ public class SSISMainDisplay extends JFrame {
         banner_panel.add(SSIS_name);
 
         // setup the button to display the student data table
-        JButton students_button = new JButton("Students");
+        students_button = new JButton("Students");
         students_button.setBounds(850, PADDING_HEIGHT * 2, 120, 30);
         students_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
         students_button.setFocusable(false);
         students_button.addActionListener(e -> {
+            // to prevent confusion to what table currently displayed
+            students_button.setEnabled(false);
+            courses_button.setEnabled(true);
+
             display_table.getSelectionModel().clearSelection(); // clear the previous table selection
             display_table = student_table; // change the table to be displayed
             refreshTable(); // refresh the display table
@@ -104,11 +110,15 @@ public class SSISMainDisplay extends JFrame {
         banner_panel.add(students_button);
 
         // setup the button to display the course data table
-        JButton courses_button = new JButton("Courses");
+        courses_button = new JButton("Courses");
         courses_button.setBounds(1000, PADDING_HEIGHT * 2, 120, 30);
         courses_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
         courses_button.setFocusable(false);
         courses_button.addActionListener(e -> {
+            // to prevent confusion to what table currently displayed
+            courses_button.setEnabled(false);
+            students_button.setEnabled(true);
+
             display_table.getSelectionModel().clearSelection(); // clear the previous table selection
             display_table = course_table; // change the table to be displayed
             refreshTable(); // refresh the display table
@@ -222,14 +232,18 @@ public class SSISMainDisplay extends JFrame {
      * files.
      */
     private void tableAreaDisplay() {
+        // setup the table panel
         table_panel = new JPanel();
         table_panel.setBounds(0, banner_panel.getHeight() + option_panel.getHeight(),
                 this.getWidth() - PADDING_WIDTH + 5,
                 this.getHeight() - banner_panel.getHeight() - option_panel.getHeight() - 4 * PADDING_HEIGHT);
         table_panel.setLayout(new BoxLayout(table_panel, BoxLayout.Y_AXIS));
 
-        display_table = student_table; // default table to display
-        refreshTable();
+        // default table to display
+        display_table = student_table;
+        students_button.setEnabled(false);
+
+        refreshTable(); // refresh the display in table_panel
 
         this.add(table_panel);
     }
@@ -238,8 +252,8 @@ public class SSISMainDisplay extends JFrame {
      * Refreshes the table displayed.
      */
     private void refreshTable() {
+        // setup and manage the display_table
         JScrollPane table_ScrollPane = new JScrollPane(display_table);
-        // manage the JTable
         table_ScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         table_ScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 

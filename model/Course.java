@@ -48,8 +48,7 @@ public class Course {
      */
     public void courseDelete() {
         /*
-         * cant use unenroll because it will change the size, then the forEach method
-         * will fail. clear the block after transferring all students
+         * Transfer all students to unenrolled course then clear the block after
          */
         for (int student_count = 0; student_count < block.size(); student_count++) {
             block.get(student_count).setCourseCode(Data_Manager.notEnrolled().getCourseCode());

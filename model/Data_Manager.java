@@ -51,7 +51,7 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString());
+                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
                         writer.write(table.getValueAt(row, column).toString() + ",");
                 }
@@ -86,7 +86,7 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString());
+                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
                         writer.write(table.getValueAt(row, column).toString() + ",");
                 }

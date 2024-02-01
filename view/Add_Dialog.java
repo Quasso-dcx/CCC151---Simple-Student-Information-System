@@ -229,7 +229,11 @@ public class Add_Dialog extends JDialog {
 
         course_code_data = new JComboBox<>(courses_listed);
         for (String course : courses_listed){
-            if (course.equals("N/A-Unenrolled")) course_code_data.setSelectedItem(course);
+            //set the default course shown in the combo box to be N/A-Unenrolled
+            if (course.equals("N/A-Unenrolled")) {
+                course_code_data.setSelectedItem(course);
+                break;
+            }
         }
         layout_Constraints.fill = GridBagConstraints.HORIZONTAL;
         layout_Constraints.gridx = 0;

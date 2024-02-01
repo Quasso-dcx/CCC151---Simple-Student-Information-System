@@ -366,17 +366,16 @@ public class Edit_Dialog extends JDialog {
                                 // if the course of the student has been changed, unenroll from its previous
                                 // course then enroll to its new
                                 if (!student_table.getValueAt(table_row_selected, 6).equals(student.getCourseCode())) {
-                                    Course new_course = Data_Manager.notEnrolled(); // for initialization only, and also
-                                                                                    // when the new course is not found
+                                    // for initialization only, and also when the new course is not found
+                                    Course new_course = Data_Manager.notEnrolled();
                                     for (Course course_find : Data_Manager.coursesList()) {
                                         if (course_find.getCourseCode().equals(selected_row_data[6])) {
                                             new_course = course_find;
                                             break;
                                         }
                                     }
-
-                                    Course old_course = Data_Manager.notEnrolled(); // for initialization only, and also
-                                                                                    // when the old course is not found
+                                    // for initialization only, and also when the old course is not found
+                                    Course old_course = Data_Manager.notEnrolled();
                                     for (Course course_find : Data_Manager.coursesList()) {
                                         if (course_find.getCourseCode()
                                                 .equals(student_table.getValueAt(table_row_selected, 6))) {
