@@ -19,8 +19,14 @@ public class SSISMainDisplay extends JFrame {
 
     // panels for the display
     private JPanel banner_panel;
+    private JPanel filter_panel;
     private JPanel option_panel;
     private JPanel table_panel;
+
+    // filtering data
+    private JComboBox<String> column_names;
+    private JTextField search_input;
+    private JButton search_button;
 
     // functional buttons
     private JButton add_button;
@@ -55,6 +61,7 @@ public class SSISMainDisplay extends JFrame {
                         "Exit Confirmation", JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex());
                     Data_Manager.courseFileSaver();
                     Data_Manager.studentFileSaver();
                     System.exit(0);
@@ -67,11 +74,14 @@ public class SSISMainDisplay extends JFrame {
 
         // create an instance of a Table_Manager where static tables are prepared
         new Table_Manager();
-        student_table = Table_Manager.getStudentTable();
+        display_table = student_table = Table_Manager.getStudentTable();
         course_table = Table_Manager.getCourseTable();
+
+        new Filter_Data();
 
         bannerAreaDisplay();
         optionAreaDisplay();
+        filterAreaDisplay();
         tableAreaDisplay();
     }
 
@@ -97,7 +107,6 @@ public class SSISMainDisplay extends JFrame {
         students_button = new JButton("Students");
         students_button.setBounds(850, PADDING_HEIGHT * 2, 120, 30);
         students_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-        students_button.setFocusable(false);
         students_button.setToolTipText("Display the table listing the students registered.");
         students_button.addActionListener(e -> {
             // to prevent confusion to what table currently displayed
@@ -107,6 +116,7 @@ public class SSISMainDisplay extends JFrame {
             display_table.getSelectionModel().clearSelection(); // clear the previous table selection
             display_table = student_table; // change the table to be displayed
             refreshTable(); // refresh the display table
+            refreshFilterArea();
         });
         banner_panel.add(students_button);
 
@@ -114,7 +124,6 @@ public class SSISMainDisplay extends JFrame {
         courses_button = new JButton("Courses");
         courses_button.setBounds(1000, PADDING_HEIGHT * 2, 120, 30);
         courses_button.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-        courses_button.setFocusable(false);
         courses_button.setToolTipText("Display the table listing the courses registered.");
         courses_button.addActionListener(e -> {
             // to prevent confusion to what table currently displayed
@@ -124,6 +133,7 @@ public class SSISMainDisplay extends JFrame {
             display_table.getSelectionModel().clearSelection(); // clear the previous table selection
             display_table = course_table; // change the table to be displayed
             refreshTable(); // refresh the display table
+            refreshFilterArea();
         });
         banner_panel.add(courses_button);
 
@@ -138,15 +148,14 @@ public class SSISMainDisplay extends JFrame {
     private void optionAreaDisplay() {
         // setup the panel
         option_panel = new JPanel();
-        option_panel.setBounds(0, banner_panel.getHeight(), this.getWidth(), 100);
+        option_panel.setBounds(650, banner_panel.getHeight(), this.getWidth() - 650, 100);
         option_panel.setBackground(this.getBackground());
         option_panel.setLayout(null);
 
         // setup and add functionality of the add button
         add_button = new JButton("Add Item");
-        add_button.setBounds(PADDING_WIDTH * 1 + 650, PADDING_HEIGHT * 3, 120, 30);
+        add_button.setBounds(PADDING_WIDTH * 1, PADDING_HEIGHT * 3, 120, 30);
         add_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        add_button.setFocusable(false);
         add_button.setToolTipText("Add item to the table.");
         add_button.addActionListener(new ActionListener() {
             @Override
@@ -159,9 +168,8 @@ public class SSISMainDisplay extends JFrame {
 
         // setup and add functionality of the edit button
         edit_button = new JButton("Edit Item");
-        edit_button.setBounds(PADDING_WIDTH * 2 + 650 + 120 * 1, PADDING_HEIGHT * 3, 120, 30);
+        edit_button.setBounds(PADDING_WIDTH * 2 + 120 * 1, PADDING_HEIGHT * 3, 120, 30);
         edit_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        edit_button.setFocusable(false);
         edit_button.setToolTipText("Edit the selected row in the table.");
         edit_button.addActionListener(new ActionListener() {
             @Override
@@ -187,9 +195,8 @@ public class SSISMainDisplay extends JFrame {
 
         // setup and add functionality of the delete button
         delete_button = new JButton("Delete Item");
-        delete_button.setBounds(PADDING_WIDTH * 3 + 650 + 120 * 2, PADDING_HEIGHT * 3, 120, 30);
+        delete_button.setBounds(PADDING_WIDTH * 3 + 120 * 2, PADDING_HEIGHT * 3, 120, 30);
         delete_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        delete_button.setFocusable(false);
         delete_button.setToolTipText("Delete the selected row in the table.");
         delete_button.addActionListener(new ActionListener() {
             @Override
@@ -215,13 +222,13 @@ public class SSISMainDisplay extends JFrame {
 
         // setup and add functionality of the save button
         save_button = new JButton("Save Tables");
-        save_button.setBounds(PADDING_WIDTH * 4 + 650 + 120 * 3, PADDING_HEIGHT * 3, 130, 30);
+        save_button.setBounds(PADDING_WIDTH * 4 + 120 * 3, PADDING_HEIGHT * 3, 130, 30);
         save_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        save_button.setFocusable(false);
         save_button.setToolTipText("Save the tables to their respective CSV files.");
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex());
                 // process the saving of the table data to csv files
                 Data_Manager.courseFileSaver();
                 Data_Manager.studentFileSaver();
@@ -234,7 +241,84 @@ public class SSISMainDisplay extends JFrame {
     }
 
     /*
-     * Display the last part of the display. Shows the tables gathered from the csv
+     * Display the third part of the display. Shows the filtering options to search
+     * the data in the table.
+     */
+    private void filterAreaDisplay() {
+        filter_panel = new JPanel();
+        filter_panel.setBounds(0, banner_panel.getHeight(), 650, 100);
+        filter_panel.setBackground(this.getBackground());
+        filter_panel.setLayout(null);
+
+        refreshFilterArea();
+    }
+
+    /*
+     * Refresh the filtering area.
+     */
+    private void refreshFilterArea() {
+        // get the columns of the displayed table
+        String[] columns = new String[display_table.getColumnCount()];
+        for (int column_count = 0; column_count < display_table.getColumnCount(); column_count++) {
+            columns[column_count] = display_table.getColumnName(column_count);
+        }
+        column_names = new JComboBox<>(columns);
+        column_names.setBounds(PADDING_WIDTH * 1, PADDING_HEIGHT * 3, 110, 30);
+
+        // setup the search field
+        search_input = new JTextField("Search Here");
+        search_input.setBounds(PADDING_WIDTH * 2 + 110, PADDING_HEIGHT * 3, 350, 30);
+        search_input.addFocusListener(new FocusListener() {
+            /*
+             * This is to add a placeholder inside the textfield.
+             */
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (search_input.getText().equals("Search Here")) {
+                    search_input.setText("");
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (search_input.getText().isEmpty()) {
+                    search_input.setText("Search Here");
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
+                }
+            }
+        });
+        ;
+
+        // setup the search button
+        search_button = new JButton("Search");
+        search_button.setBounds(PADDING_WIDTH * 3 + 460, PADDING_HEIGHT * 3, 100, 30);
+        search_button.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        search_button.setToolTipText("Save the tables to their respective CSV files.");
+        search_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // secure that something is inputted to be search
+                if (search_input.getText().equals("") || search_input.getText().equals("Search Here"))
+                    JOptionPane.showMessageDialog(null, "Enter something to search.", "Empty Search",
+                            JOptionPane.CLOSED_OPTION);
+                else
+                    Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex());
+            }
+        });
+
+        filter_panel.removeAll();
+        filter_panel.revalidate();
+        filter_panel.repaint();
+
+        filter_panel.add(column_names);
+        filter_panel.add(search_input);
+        filter_panel.add(search_button);
+    }
+
+    /*
+     * Display the last part of the display. Shows the tables gathered from the
+     * csv
      * files.
      */
     private void tableAreaDisplay() {
@@ -246,12 +330,12 @@ public class SSISMainDisplay extends JFrame {
         table_panel.setLayout(new BoxLayout(table_panel, BoxLayout.Y_AXIS));
 
         // default table to display
-        display_table = student_table;
         students_button.setEnabled(false);
 
         refreshTable(); // refresh the display in table_panel
 
         this.add(table_panel);
+        this.add(filter_panel);
     }
 
     /*
