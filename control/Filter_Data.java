@@ -19,6 +19,7 @@ public class Filter_Data {
         def_model = (DefaultTableModel) table.getModel();
         row_sorter = new TableRowSorter<DefaultTableModel>(def_model);
         table.setRowSorter(row_sorter);
+        table.getRowSorter().toggleSortOrder(0); // to still sort the filtered data based on the first column
 
         row_sorter.setRowFilter(RowFilter.regexFilter(input_search, column_index));
     }

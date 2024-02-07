@@ -267,12 +267,22 @@ public class SSISMainDisplay extends JFrame {
      */
     private void refreshFilterArea() {
         // get the columns of the displayed table
-        String[] columns = new String[display_table.getColumnCount()];
+        String[] columns = new String[display_table.getColumnCount() + 1];
+        columns[0] = "Select Column...";
         for (int column_count = 0; column_count < display_table.getColumnCount(); column_count++) {
-            columns[column_count] = display_table.getColumnName(column_count);
+            columns[column_count + 1] = display_table.getColumnName(column_count);
         }
         column_names = new JComboBox<>(columns);
-        column_names.setBounds(PADDING_WIDTH * 1, PADDING_HEIGHT * 3, 110, 30);
+        column_names.setSelectedIndex(0);
+        column_names.setBounds(PADDING_WIDTH * 1, PADDING_HEIGHT * 3, 120, 30);
+        column_names.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //turn off the filtering when no column is selected
+                if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
+            }
+        });
 
         // setup the search field
         search_input = new JTextField("Search Here");
@@ -307,12 +317,15 @@ public class SSISMainDisplay extends JFrame {
         search_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // secure that something is inputted to be search
-                if (search_input.getText().equals("") || search_input.getText().equals("Search Here"))
+                // secure that something is inputted to be search and a column is selected
+                if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
+                    JOptionPane.showMessageDialog(null, "Select a column.", "Invalid Column",
+                            JOptionPane.CLOSED_OPTION);
+                else if (search_input.getText().equals("") || search_input.getText().equals("Search Here"))
                     JOptionPane.showMessageDialog(null, "Enter something to search.", "Empty Search",
                             JOptionPane.CLOSED_OPTION);
                 else
-                    Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex());
+                    Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex() - 1);
             }
         });
 
