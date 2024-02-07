@@ -221,7 +221,7 @@ public class Add_Dialog extends JDialog {
         Arrays.sort(courses_listed);
 
         course_data = new JComboBox<>(courses_listed);
-        course_data.setSelectedItem("N/A-Unenrolled");     //set the default selection to unenrolled
+        course_data.setSelectedItem("N/A-Unenrolled"); // set the default selection to unenrolled
         layout_Constraints.fill = GridBagConstraints.HORIZONTAL;
         layout_Constraints.gridx = 0;
         layout_Constraints.gridy = 7;

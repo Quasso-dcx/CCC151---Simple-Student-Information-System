@@ -22,10 +22,10 @@ public class Data_Manager {
     private static final String course_file = "CSV_Files\\Courses.csv";
 
     private static ArrayList<Course> courses = new ArrayList<>(); // store the registered courses
-    private static Course unenrolled_course = new Course("N/A", "Unenrolled");  //default course
+    private static Course unenrolled_course = new Course("N/A", "Unenrolled"); // default course
     private static String[] course_column;
     private static String[] student_column;
-    
+
     private BufferedReader reader;
     private String line;
 
