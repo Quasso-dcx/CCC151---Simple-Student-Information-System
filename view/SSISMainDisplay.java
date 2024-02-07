@@ -1,10 +1,32 @@
 package view;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
-import model.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+
+import control.Data_Manager;
+import control.Delete_Process;
+import control.Filter_Data;
+import model.Table_Manager;
 
 /*
  * Facilitates the functionality and displays the main frame of the SSIS.
@@ -179,15 +201,9 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(null, "Please select a row.", "Edit Data Error",
                             JOptionPane.DEFAULT_OPTION);
                 else {
-                    // avoid editing the unenrolled course (the default course)
-                    if (display_table.getValueAt(selected_row, 0).equals("N/A")
-                            && display_table.getValueAt(selected_row, 1).equals("Unenrolled")) {
-                        JOptionPane.showMessageDialog(null, "Cannot be edited.", "Edit Data Error.",
-                                JOptionPane.DEFAULT_OPTION);
-                    } else {
-                        // display the edit_dialog
-                        new Edit_Dialog(display_table).setVisible(true);
-                    }
+                    // display the edit_dialog
+                    new Edit_Dialog(display_table).setVisible(true);
+
                 }
             }
         });
@@ -206,15 +222,8 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(null, "Please select a row.", "Delete Data Error",
                             JOptionPane.DEFAULT_OPTION);
                 else {
-                    // avoid deleting the unenrolled course (the default course)
-                    if (display_table.getValueAt(selected_row, 0).equals("N/A")
-                            && display_table.getValueAt(selected_row, 1).equals("Unenrolled")) {
-                        JOptionPane.showMessageDialog(null, "Cannot be deleted.", "Delete Data Error",
-                                JOptionPane.DEFAULT_OPTION);
-                    } else {
-                        // display the delete_dialog
-                        new Delete_Process(display_table);
-                    }
+                    // display the delete_dialog
+                    new Delete_Process(display_table);
                 }
             }
         });

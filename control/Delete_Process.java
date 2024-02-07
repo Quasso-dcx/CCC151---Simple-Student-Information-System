@@ -1,11 +1,15 @@
-package model;
+package control;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import model.Course;
+import model.Student;
+import model.Table_Manager;
+
 /*
- * Facilitates the deletion of the rows in the tables
+ * Facilitates the deletion of the rows in the tables and their relations
  */
 public class Delete_Process {
     public Delete_Process(JTable table) {

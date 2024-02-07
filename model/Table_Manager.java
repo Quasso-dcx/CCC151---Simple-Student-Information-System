@@ -1,7 +1,9 @@
 package model;
 
-import javax.swing.*;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import control.Data_Manager;
 
 /*
  * Facilitates the creation and functionalities of the tables
@@ -69,6 +71,10 @@ public class Table_Manager {
 
         // traverse the course list then add their details to the tables
         for (Course course : Data_Manager.coursesList()) {
+            // skip showing in the table the unenrolled course
+            if (course.getCourseCode().equals("N/A") && course.getCourseName().equals("Unenrolled"))
+                continue;
+
             courses_table_model.addRow(new Object[] { course.getCourseCode(), course.getCourseName() });
         }
     }

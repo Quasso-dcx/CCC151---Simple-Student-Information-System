@@ -1,4 +1,4 @@
-package model;
+package control;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,17 +9,23 @@ import java.util.ArrayList;
 
 import javax.swing.JTable;
 
+import model.Course;
+import model.Student;
+import model.Table_Manager;
+
 /*
  * Facilitates the process of converting the data from writer files to objects of Course and Student
  */
 public class Data_Manager {
     // files
-    private static final String student_file = "model\\CSV_Files\\Students.csv";
-    private static final String course_file = "model\\CSV_Files\\Courses.csv";
+    private static final String student_file = "CSV_Files\\Students.csv";
+    private static final String course_file = "CSV_Files\\Courses.csv";
 
     private static ArrayList<Course> courses = new ArrayList<>(); // store the registered courses
+    private static Course unenrolled_course = new Course("N/A", "Unenrolled");  //default course
     private static String[] course_column;
     private static String[] student_column;
+    
     private BufferedReader reader;
     private String line;
 
@@ -147,6 +153,7 @@ public class Data_Manager {
      * table
      */
     private void courseFileReader() {
+        courses.add(unenrolled_course);
         try {
             // setup the reader
             reader = new BufferedReader(new FileReader(course_file));
@@ -197,16 +204,6 @@ public class Data_Manager {
      * Return the "Course" for unenrolled student
      */
     public static Course notEnrolled() {
-        Course unenrolled_course = courses.get(0);
-        if (!unenrolled_course.getCourseCode().equals("N/A") && !unenrolled_course.getCourseName().equals("Unenrolled")) {
-            for (Course course : courses) {
-                if (course.getCourseCode().equals("N/A") && course.getCourseName().equals("Unenrolled")) {
-                    unenrolled_course = course;
-                    break;
-                }
-            }
-        }
-
         return unenrolled_course;
     }
 }

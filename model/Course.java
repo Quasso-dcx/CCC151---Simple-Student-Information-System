@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import control.Data_Manager;
+
 /*
  * Course object
  */
