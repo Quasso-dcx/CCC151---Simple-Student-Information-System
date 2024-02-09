@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JTable;
 
@@ -21,7 +21,7 @@ public class Data_Manager {
     private static final String student_file = "CSV_Files\\Students.csv";
     private static final String course_file = "CSV_Files\\Courses.csv";
 
-    private static ArrayList<Course> courses = new ArrayList<>(); // store the registered courses
+    private static HashMap<String, Course> courses = new HashMap<>(); // store the registered courses
     private static Course unenrolled_course = new Course("N/A", "Unenrolled"); // default course
     private static String[] course_column;
     private static String[] student_column;
@@ -131,16 +131,15 @@ public class Data_Manager {
 
                 Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5], "N/A", "Unenrolled");
                 // traverse the course list for the enrolled course
-                for (Course course : courses) {
-                    // if the enrolled course is found, change the details then add to the block of
-                    // the course
-                    if (course.getCourseCode().equals(row[6])) {
-                        new_student.setCourseCode(course.getCourseCode());
-                        new_student.setCourseName(course.getCourseName());
-                        course.getBlock().add(new_student);
-                        break;
-                    }
+
+                Course course = unenrolled_course;  //incase the course recorded was deleted or something happened
+                if (courses.containsKey(row[6])) {
+                    course = courses.get(row[6]);
                 }
+
+                new_student.setCourseCode(course.getCourseCode());
+                new_student.setCourseName(course.getCourseName());
+                course.getBlock().add(new_student);
             }
             reader.close();
         } catch (Exception e) {
@@ -153,7 +152,7 @@ public class Data_Manager {
      * table
      */
     private void courseFileReader() {
-        courses.add(unenrolled_course);
+        courses.put(unenrolled_course.getCourseCode(), unenrolled_course);
         try {
             // setup the reader
             reader = new BufferedReader(new FileReader(course_file));
@@ -171,7 +170,7 @@ public class Data_Manager {
                     continue;
                 }
                 // add the course in the course list
-                courses.add(new Course(row[0], row[1]));
+                courses.put(row[0], new Course(row[0], row[1]));
             }
             reader.close();
         } catch (Exception e) {
@@ -182,7 +181,7 @@ public class Data_Manager {
     /*
      * Return the course list.
      */
-    public static ArrayList<Course> coursesList() {
+    public static HashMap<String, Course> coursesList() {
         return courses;
     }
 

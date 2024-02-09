@@ -34,35 +34,30 @@ public class Delete_Process {
 
         // traverse the whole course list to find the course of the student to be
         // deleted
-        Outer: for (Course course : Data_Manager.coursesList()) {
-            // if found, find the student to remove from the block
-            if (student_table.getValueAt(table_row_selected, student_table_model.getColumnCount() - 1)
-                    .equals(course.getCourseCode())) {
-
-                // traverse the student list
-                for (Student student : course.getBlock()) {
-                    // check if the student has all the components/data of the selected row, check
-                    // every attribute to avoid changing duplicates
-                    if (student.getSurname().equals(student_table.getValueAt(table_row_selected, 0))
-                            && student.getFirstName().equals(student_table.getValueAt(table_row_selected, 1))
-                            && student.getMiddleName().equals(student_table.getValueAt(table_row_selected, 2))
-                            && student.getIDNumber().equals(student_table.getValueAt(table_row_selected, 3))
-                            && student.getYearLevel().equals(student_table.getValueAt(table_row_selected, 4))
-                            && student.getGender().equals(student_table.getValueAt(table_row_selected, 5))
-                            && student.getCourseCode().equals(student_table.getValueAt(table_row_selected, 6))) {
-                        // ask for confimation
-                        int choosen = JOptionPane.showConfirmDialog(null,
-                                "Are you sure?", "Confirmation",
-                                JOptionPane.OK_CANCEL_OPTION);
-                        // if the choosen option is not okay, cancel the action
-                        if (choosen != JOptionPane.OK_OPTION) {
-                            return;
-                        }
-                        // if confirmed, remove the student
-                        course.getBlock().remove(student);
-                        break Outer;
-                    }
+        String course_key = student_table.getValueAt(table_row_selected, student_table_model.getColumnCount() - 1).toString();
+        Course course = Data_Manager.coursesList().get(course_key);
+        // traverse the student list
+        for (Student student : course.getBlock()) {
+            // check if the student has all the components/data of the selected row, check
+            // every attribute to avoid changing duplicates
+            if (student.getSurname().equals(student_table.getValueAt(table_row_selected, 0))
+                    && student.getFirstName().equals(student_table.getValueAt(table_row_selected, 1))
+                    && student.getMiddleName().equals(student_table.getValueAt(table_row_selected, 2))
+                    && student.getIDNumber().equals(student_table.getValueAt(table_row_selected, 3))
+                    && student.getYearLevel().equals(student_table.getValueAt(table_row_selected, 4))
+                    && student.getGender().equals(student_table.getValueAt(table_row_selected, 5))
+                    && student.getCourseCode().equals(student_table.getValueAt(table_row_selected, 6))) {
+                // ask for confimation
+                int choosen = JOptionPane.showConfirmDialog(null,
+                        "Are you sure?", "Confirmation",
+                        JOptionPane.OK_CANCEL_OPTION);
+                // if the choosen option is not okay, cancel the action
+                if (choosen != JOptionPane.OK_OPTION) {
+                    return;
                 }
+                // if confirmed, remove the student
+                course.getBlock().remove(student);
+                break;
             }
         }
 
@@ -91,25 +86,20 @@ public class Delete_Process {
         int table_row_selected = course_table.getSelectedRow();
         // Since deleting a course also affects the students enrolled, traverse the
         // course list to find the course to be deleted
-        for (Course course : Data_Manager.coursesList()) {
-            // if the course is found, use the method to delete the course, then remove the
-            // course from the course list
-            if (course.getCourseCode().equals(course_table.getValueAt(table_row_selected, 0))
-                    && course.getCourseName().equals(course_table.getValueAt(table_row_selected, 1))) {
-                // ask for confimation
-                int choosen = JOptionPane.showConfirmDialog(null,
-                        "Currently enrolled: " + course.getBlock().size() + " \nAre you sure?", "Confirmation",
-                        JOptionPane.OK_CANCEL_OPTION);
-                // if the choosen option is not okay, cancel the action
-                if (choosen != JOptionPane.OK_OPTION) {
-                    return;
-                }
-                // if confirmed, remove the course
-                course.courseDelete();
-                Data_Manager.coursesList().remove(course);
-                break; // break the loop
-            }
+        String course_key = course_table.getValueAt(table_row_selected, 0).toString();
+        Course course = Data_Manager.coursesList().get(course_key);
+        // ask for confimation
+        int choosen = JOptionPane.showConfirmDialog(null,
+                "Currently enrolled: " + course.getBlock().size() + " \nAre you sure?", "Confirmation",
+                JOptionPane.OK_CANCEL_OPTION);
+        // if the choosen option is not okay, cancel the action
+        if (choosen != JOptionPane.OK_OPTION) {
+            return;
         }
+        // if confirmed, remove the course
+        course.courseDelete();
+        Data_Manager.coursesList().remove(course_key);
+
 
         // removing the selected row from the course table
         for (int row_item = 0; row_item < course_table_model.getRowCount(); row_item++) {

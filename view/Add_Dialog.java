@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -214,14 +215,23 @@ public class Add_Dialog extends JDialog {
 
         // list the courses available in a readable way
         String[] courses_listed = new String[Data_Manager.coursesList().size()];
-        for (int course_count = 0; course_count < Data_Manager.coursesList().size(); course_count++) {
-            Course current_course = Data_Manager.coursesList().get(course_count);
-            courses_listed[course_count] = current_course.getCourseCode() + "-" + current_course.getCourseName();
+        int course_count = 0;
+        for (Map.Entry<String, Course> entry : Data_Manager.coursesList().entrySet()) {
+            Course value = entry.getValue();
+            courses_listed[course_count] = value.getCourseCode() + "-" + value.getCourseName();
+            course_count++;
         }
         Arrays.sort(courses_listed);
 
         course_data = new JComboBox<>(courses_listed);
+        course_data.setPreferredSize(new Dimension(300, 30));
         course_data.setSelectedItem("N/A-Unenrolled"); // set the default selection to unenrolled
+        course_data.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                course_data.setToolTipText(course_data.getSelectedItem().toString());
+            }
+        });
         layout_Constraints.fill = GridBagConstraints.HORIZONTAL;
         layout_Constraints.gridx = 0;
         layout_Constraints.gridy = 7;

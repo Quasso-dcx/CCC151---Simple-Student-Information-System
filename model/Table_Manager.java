@@ -40,7 +40,7 @@ public class Table_Manager {
         students_table.getRowSorter().toggleSortOrder(0);
 
         // traverse the course list
-        for (Course course : Data_Manager.coursesList()) {
+        for (Course course : Data_Manager.coursesList().values()) {
             // traverse the students in the course then add their details to the tables
             for (Student student : course.getBlock()) {
                 student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
@@ -70,7 +70,7 @@ public class Table_Manager {
         courses_table.getRowSorter().toggleSortOrder(0);
 
         // traverse the course list then add their details to the tables
-        for (Course course : Data_Manager.coursesList()) {
+        for (Course course : Data_Manager.coursesList().values()) {
             // skip showing in the table the unenrolled course
             if (course.getCourseCode().equals("N/A") && course.getCourseName().equals("Unenrolled"))
                 continue;

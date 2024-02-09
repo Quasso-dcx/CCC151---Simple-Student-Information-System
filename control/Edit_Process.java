@@ -37,7 +37,7 @@ public class Edit_Process {
         // traverse the whole student list, check if another student has the same unique
         // attribute registered. Also, check if the attribute of the student is not the
         // same with the selected row to avoid checking itself.
-        for (Course course : Data_Manager.coursesList()) {
+        for (Course course : Data_Manager.coursesList().values()) {
             for (Student student : course.getBlock()) {
                 // check for the unique name
                 if ((student.getSurname().equals(new_surname)
@@ -73,51 +73,36 @@ public class Edit_Process {
             String[] student_new_course = new_course.split("-");
             // Since editing a course also affects the students enrolled, traverse the
             // course list to find the course to be edited
-            Outer: for (Course course : Data_Manager.coursesList()) {
-                // traverse the students in the course
-                for (Student student : course.getBlock()) {
-                    // check if the student has all the unique components/data of the selected row
-                    if (student.getSurname().equals(student_table.getValueAt(table_row_selected, 0))
-                            && student.getFirstName().equals(student_table.getValueAt(table_row_selected, 1))
-                            && student.getMiddleName().equals(student_table.getValueAt(table_row_selected, 2))
-                            && student.getIDNumber().equals(student_table.getValueAt(table_row_selected, 3))) {
+            Course course = Data_Manager.coursesList().get(student_table.getValueAt(table_row_selected, student_table.getColumnCount() - 1));
+            for (Student student : course.getBlock()) {
+                // check if the student has all the unique components/data of the selected row
+                if (student.getSurname().equals(student_table.getValueAt(table_row_selected, 0))
+                        && student.getFirstName().equals(student_table.getValueAt(table_row_selected, 1))
+                        && student.getMiddleName().equals(student_table.getValueAt(table_row_selected, 2))
+                        && student.getIDNumber().equals(student_table.getValueAt(table_row_selected, 3))) {
 
-                        // change the atributes
-                        student.setSurname(new_surname);
-                        student.setFirstName(new_first_name);
-                        student.setMiddleName(new_middle_name);
-                        student.setIDNumber(new_ID_number);
-                        student.setYearLevel(new_year_level);
-                        student.setGender(new_gender);
-                        student.setCourseCode(student_new_course[0]);
-                        student.setCourseName(student_new_course[1]);
+                    // change the atributes
+                    student.setSurname(new_surname);
+                    student.setFirstName(new_first_name);
+                    student.setMiddleName(new_middle_name);
+                    student.setIDNumber(new_ID_number);
+                    student.setYearLevel(new_year_level);
+                    student.setGender(new_gender);
+                    student.setCourseCode(student_new_course[0]);
+                    student.setCourseName(student_new_course[1]);
 
-                        // if the course of the student has been changed, unenroll from its previous
-                        // course then enroll to its new
-                        if (!student_table.getValueAt(table_row_selected, 6).equals(student.getCourseCode())) {
-                            // for initialization only, and also when the new course is not found
-                            Course change_course = Data_Manager.notEnrolled();
-                            for (Course course_find : Data_Manager.coursesList()) {
-                                if (course_find.getCourseCode().equals(student_new_course[0])) {
-                                    change_course = course_find;
-                                    break;
-                                }
-                            }
-                            // for initialization only, and also when the old course is not found
-                            Course old_course = Data_Manager.notEnrolled();
-                            for (Course course_find : Data_Manager.coursesList()) {
-                                if (course_find.getCourseCode()
-                                        .equals(student_table.getValueAt(table_row_selected, 6))) {
-                                    old_course = course_find;
-                                    break;
-                                }
-                            }
-
-                            old_course.getBlock().remove(student); // remove student from the old course
-                            change_course.getBlock().add(student); // enroll student to the new course
-                        }
-                        break Outer;
+                    // if the course of the student has been changed, unenroll from its previous
+                    // course then enroll to its new
+                    if (!student_table.getValueAt(table_row_selected, 6).equals(student.getCourseCode())) {
+                        // for initialization only, and also when the old course is not found
+                        Course old_course = Data_Manager.coursesList().get(student_table.getValueAt(table_row_selected, 6));
+                        // for initialization only, and also when the new course is not found
+                        Course change_course = Data_Manager.coursesList().get(student_new_course[0]);
+                        
+                        old_course.getBlock().remove(student); // remove student from the old course
+                        change_course.getBlock().add(student); // enroll student to the new course
                     }
+                    break;
                 }
             }
 
@@ -166,48 +151,40 @@ public class Edit_Process {
         // traverse the whole course list, check if another course has the same unique
         // attribute registered. Also, check if the attribute of the course is not the
         // same with the selected row to avoid checking itself.
-        for (Course course : Data_Manager.coursesList()) {
-            if (course.getCourseCode().equals(new_course_code)
-                    && !course.getCourseCode().equals(course_table.getValueAt(table_row_selected, 0))) {
-                JOptionPane.showMessageDialog(table, "Course Code: " + new_course_code + "\nalready exist.",
-                        "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
-                theresDuplicate = true;
-                break;
-            } else if (course.getCourseName().equals(new_course_name)
-                    && !course.getCourseName().equals(course_table.getValueAt(table_row_selected, 1))) {
+        if (Data_Manager.coursesList().containsKey(new_course_code)) {
+            JOptionPane.showMessageDialog(table, "Course Code: " + new_course_code + "\nalready exist.",
+                    "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
+            theresDuplicate = true;
+        }
+
+        for (Course course : Data_Manager.coursesList().values()) {
+            if (course.getCourseName().equals(new_course_name)) {
                 JOptionPane.showMessageDialog(table, "Course Name: " + new_course_name + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
                 theresDuplicate = true;
-                break;
-            } else
-                continue;
+            }
         }
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
             // change the attributes for courseCode of every student inside the course
             if (!course_table.getValueAt(table_row_selected, 0).equals(new_course_code)) {
-                for (Course course : Data_Manager.coursesList()) {
-                    if (course.getCourseCode()
-                            .equals(course_table.getValueAt(table_row_selected, 0))) {
-                        course.setCourseCode(new_course_code);
-                        for (Student student : course.getBlock()) {
-                            student.setCourseCode(new_course_code);
-                        }
-                    }
+                Course course = Data_Manager.coursesList().get(course_table.getValueAt(table_row_selected, 0));
+                course.setCourseCode(new_course_code);
+
+                for (Student student : course.getBlock()) {
+                    student.setCourseCode(new_course_code);
                 }
             }
 
             // change the attributes for courseName of every student inside the course
             if (!course_table.getValueAt(table_row_selected, 1).equals(new_course_name)) {
-                for (Course course : Data_Manager.coursesList()) {
-                    if (course.getCourseName()
-                            .equals(course_table.getValueAt(table_row_selected, 1))) {
-                        course.setCourseName(new_course_name);
-                        for (Student student : course.getBlock()) {
-                            student.setCourseName(new_course_name);
-                        }
-                    }
+                Course course = Data_Manager.coursesList().get(course_table.getValueAt(table_row_selected, 0));
+                course.setCourseCode(new_course_name);
+
+                course.setCourseName(new_course_name);
+                for (Student student : course.getBlock()) {
+                    student.setCourseName(new_course_name);
                 }
             }
 
