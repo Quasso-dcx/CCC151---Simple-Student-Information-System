@@ -83,7 +83,7 @@ public class SSISMainDisplay extends JFrame {
                         "Exit Confirmation", JOptionPane.YES_NO_CANCEL_OPTION,
                         JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex());
+                    Filter_Data.rowFilter(display_table, "", 0);
                     Data_Manager.courseFileSaver();
                     Data_Manager.studentFileSaver();
                     System.exit(0);
@@ -237,7 +237,7 @@ public class SSISMainDisplay extends JFrame {
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex());
+                Filter_Data.rowFilter(display_table, "", 0);
                 // process the saving of the table data to csv files
                 Data_Manager.courseFileSaver();
                 Data_Manager.studentFileSaver();
@@ -280,7 +280,7 @@ public class SSISMainDisplay extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //turn off the filtering when no column is selected
                 if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex() - 1); // cancel the filter
             }
         });
 
@@ -295,7 +295,6 @@ public class SSISMainDisplay extends JFrame {
             public void focusGained(FocusEvent e) {
                 if (search_input.getText().equals("Search Here")) {
                     search_input.setText("");
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
                 }
             }
 
@@ -303,7 +302,6 @@ public class SSISMainDisplay extends JFrame {
             public void focusLost(FocusEvent e) {
                 if (search_input.getText().isEmpty()) {
                     search_input.setText("Search Here");
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex()); // cancel the filter
                 }
             }
         });
@@ -321,9 +319,11 @@ public class SSISMainDisplay extends JFrame {
                 if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
                     JOptionPane.showMessageDialog(null, "Select a column.", "Invalid Column",
                             JOptionPane.CLOSED_OPTION);
-                else if (search_input.getText().equals("") || search_input.getText().equals("Search Here"))
+                else if (search_input.getText().equals("") || search_input.getText().equals("Search Here")){
+                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex() - 1); // cancel the filter
                     JOptionPane.showMessageDialog(null, "Enter something to search.", "Empty Search",
                             JOptionPane.CLOSED_OPTION);
+                }
                 else
                     Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex() - 1);
             }
