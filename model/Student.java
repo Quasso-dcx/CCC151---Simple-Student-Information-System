@@ -1,7 +1,7 @@
 package model;
 
-/*
- * Student object
+/**
+ * Student object.
  */
 public class Student {
     private String surname;
@@ -11,7 +11,6 @@ public class Student {
     private String year_level;
     private String gender;
     private String course_code;
-    private String course_name;
 
     public Student(String surname, String first_name, String middle_name, String ID_number, String year_level,
             String gender, String course_code, String course_name) {
@@ -22,12 +21,9 @@ public class Student {
         this.year_level = year_level;
         this.gender = gender;
         this.course_code = course_code;
-        this.course_name = course_name;
     }
 
-    /*
-     * Setters and Getters
-     */
+    // Setters and Getters
 
     public void setSurname(String surname) {
         this.surname = surname;
@@ -83,13 +79,5 @@ public class Student {
 
     public String getCourseCode() {
         return this.course_code;
-    }
-
-    public void setCourseName(String course_name) {
-        this.course_name = course_name;
-    }
-
-    public String getCourseName() {
-        return this.course_name;
     }
 }

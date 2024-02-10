@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import control.Data_Manager;
 
-/*
+/**
  * Facilitates the creation and functionalities of the tables
  */
 public class Table_Manager {
@@ -20,7 +20,7 @@ public class Table_Manager {
         processStudentTable();
     }
 
-    /*
+    /**
      * Process the initial data and the functionalities of the student table
      */
     private void processStudentTable() {
@@ -39,18 +39,14 @@ public class Table_Manager {
         // auto sort based on the first column
         students_table.getRowSorter().toggleSortOrder(0);
 
-        // traverse the course list
-        for (Course course : Data_Manager.coursesList()) {
-            // traverse the students in the course then add their details to the tables
-            for (Student student : course.getBlock()) {
-                student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
-                        student.getMiddleName(),
-                        student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
-            }
-        }
+        // traverse the student list
+        for (Student student : Data_Manager.studentList().values())
+            student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
+                student.getMiddleName(),
+                student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
     }
 
-    /*
+    /**
      * Process the initial data and the functionalities of the course table
      */
     private void processCourseTable() {
@@ -70,7 +66,7 @@ public class Table_Manager {
         courses_table.getRowSorter().toggleSortOrder(0);
 
         // traverse the course list then add their details to the tables
-        for (Course course : Data_Manager.coursesList()) {
+        for (Course course : Data_Manager.coursesList().values()) {
             // skip showing in the table the unenrolled course
             if (course.getCourseCode().equals("N/A") && course.getCourseName().equals("Unenrolled"))
                 continue;
@@ -79,15 +75,17 @@ public class Table_Manager {
         }
     }
 
-    /*
-     * Return the student table
+    /**
+     * For getting the student table.
+     * @return Table_Manager.student_table
      */
     public static JTable getStudentTable() {
         return Table_Manager.students_table;
     }
 
-    /*
-     * Return the course table
+    /**
+     * For getting the course table.
+     * @return Table_Manager.courses_table
      */
     public static JTable getCourseTable() {
         return Table_Manager.courses_table;

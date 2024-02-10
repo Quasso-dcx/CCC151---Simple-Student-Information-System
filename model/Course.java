@@ -4,27 +4,20 @@ import java.util.ArrayList;
 
 import control.Data_Manager;
 
-/*
- * Course object
+/**
+ * Course object.
  */
 public class Course {
     private String code;
     private String name;
-    private ArrayList<Student> block = new ArrayList<>();
+    private ArrayList<String> block_ID = new ArrayList<>(); // store only ID Numbers
 
     public Course(String code, String name) {
         this.code = code;
         this.name = name;
     }
 
-    /*
-     * Setters and Getters
-     */
-
-    public boolean isEmpty() {
-        return block.isEmpty();
-    }
-
+    // Setters and Getters
     public void setCourseCode(String code) {
         this.code = code;
     }
@@ -41,22 +34,53 @@ public class Course {
         return this.name;
     }
 
-    public ArrayList<Student> getBlock() {
-        return this.block;
+    /**
+     * Check if the block is empyty.
+     * 
+     * @return true if the block is empty, otherwise false.
+     */
+    public boolean isEmpty() {
+        return block_ID.isEmpty();
     }
 
-    /*
-     * Invoke when deleting the course
+    /**
+     * Get the IDs of the enrolled students.
+     * 
+     * @return IDs of the enrolled students.
+     */
+    public ArrayList<String> getBlockIDs() {
+        return this.block_ID;
+    }
+
+    /**
+     * Invoke when deleting the course.
      */
     public void courseDelete() {
-        /*
-         * Transfer all students to unenrolled course then clear the block after
-         */
-        for (int student_count = 0; student_count < block.size(); student_count++) {
-            block.get(student_count).setCourseCode(Data_Manager.notEnrolled().getCourseCode());
-            block.get(student_count).setCourseName(Data_Manager.notEnrolled().getCourseName());
-            Data_Manager.notEnrolled().getBlock().add(block.get(student_count));
+        // Transfer all students to unenrolled course then clear the block after
+        for (int student_count = 0; student_count < block_ID.size(); student_count++) {
+            // get the student
+            String unenrolled_student_key = new StudentKeyMaker().keyMaker(this.getCourseCode(),
+                    block_ID.get(student_count));
+            Student unenrolled_student = Data_Manager.studentList().get(unenrolled_student_key);
+
+            // change the student's course code attribute to unenrolled
+            unenrolled_student.setCourseCode(Data_Manager.notEnrolled().getCourseCode());
+
+            // add the student's ID to the unenrolled course
+            Data_Manager.notEnrolled().getBlockIDs().add(unenrolled_student.getIDNumber());
+
+            // create a new key for the student
+            String new_student_key = new StudentKeyMaker().keyMaker(Data_Manager.notEnrolled().getCourseCode(),
+                    unenrolled_student.getIDNumber());
+
+            /*
+             * Update the key of the student in the hasmap by removing it then adding it
+             * again with a different key.
+             */
+            Data_Manager.studentList().remove(unenrolled_student_key);
+            Data_Manager.studentList().put(new_student_key, unenrolled_student);
         }
-        block.clear();
+
+        block_ID.clear(); // after transfering the students, clear the list
     }
 }
