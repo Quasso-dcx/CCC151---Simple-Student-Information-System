@@ -14,8 +14,9 @@ import model.Student;
 import model.StudentKeyMaker;
 import model.Table_Manager;
 
-/*
- * Facilitates the process of converting the data from writer files to objects of Course and Student
+/**
+ * Facilitates the process of converting the data from writer files to objects
+ * of Course and Student.
  */
 public class Data_Manager {
     // files
@@ -36,9 +37,9 @@ public class Data_Manager {
         studentFileReader();
     }
 
-    /*
+    /**
      * Process the saving of the data from the course table to the course writer
-     * file
+     * file.
      */
     public static void courseFileSaver() {
         try {
@@ -59,9 +60,15 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
+                        writer.write(table.getValueAt(row, column).toString()); // to
+                                                                                // avoid
+                                                                                // ','
+                                                                                // in
+                                                                                // the
+                                                                                // end
                     else
-                        writer.write(table.getValueAt(row, column).toString() + ",");
+                        writer.write(table.getValueAt(row, column).toString()
+                                + ",");
                 }
                 writer.write("\n");
             }
@@ -71,9 +78,9 @@ public class Data_Manager {
         }
     }
 
-    /*
+    /**
      * Process the saving of the data from the student table to the student writer
-     * file
+     * file.
      */
     public static void studentFileSaver() {
         try {
@@ -94,9 +101,15 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
+                        writer.write(table.getValueAt(row, column).toString()); // to
+                                                                                // avoid
+                                                                                // ','
+                                                                                // in
+                                                                                // the
+                                                                                // end
                     else
-                        writer.write(table.getValueAt(row, column).toString() + ",");
+                        writer.write(table.getValueAt(row, column).toString()
+                                + ",");
                 }
                 writer.write("\n");
             }
@@ -106,9 +119,9 @@ public class Data_Manager {
         }
     }
 
-    /*
+    /**
      * Process the reading of the data from the student writer file to the student
-     * table
+     * table.
      */
     private void studentFileReader() {
         try {
@@ -131,19 +144,23 @@ public class Data_Manager {
                     continue;
                 }
 
-                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5],
-                        unenrolled_course.getCourseCode(), unenrolled_course.getCourseName());
+                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4],
+                        row[5],
+                        unenrolled_course.getCourseCode(),
+                        unenrolled_course.getCourseName());
                 // traverse the course list for the enrolled course
 
-                Course course = unenrolled_course; // incase the course recorded was deleted or something happened
+                Course course = unenrolled_course; // incase the course recorded was deleted or
+                                                   // something happened
                 if (courses.containsKey(row[6])) {
                     course = courses.get(row[6]);
                 }
 
                 new_student.setCourseCode(course.getCourseCode());
-                new_student.setCourseName(course.getCourseName());
 
-                String new_student_key = new StudentKeyMaker().keyMaker(new_student.getCourseCode(), new_student.getIDNumber());
+                String new_student_key = new StudentKeyMaker().keyMaker(
+                        new_student.getCourseCode(),
+                        new_student.getIDNumber());
                 students.put(new_student_key, new_student);
                 course.getBlockIDs().add(new_student.getIDNumber());
             }
@@ -153,9 +170,9 @@ public class Data_Manager {
         }
     }
 
-    /*
+    /**
      * Process the reading of the data from the course writer file to the course
-     * table
+     * table.
      */
     private void courseFileReader() {
         courses.put(unenrolled_course.getCourseCode(), unenrolled_course);
@@ -184,33 +201,46 @@ public class Data_Manager {
         }
     }
 
-    /*
+    /**
      * Return the course list.
+     * 
+     * @return courses
      */
     public static HashMap<String, Course> coursesList() {
         return courses;
     }
 
-    public static HashMap<String, Student> studentList(){
+    /**
+     * Return the student list.
+     * 
+     * @return students
+     */
+    public static HashMap<String, Student> studentList() {
         return students;
     }
 
-    /*
-     * Return the column names for the student column
+    /**
+     * Return the column names for the student column.
+     * 
+     * @return student_column
      */
     public static String[] getStudentColumn() {
         return student_column;
     }
 
-    /*
-     * Return the column names for the course column
+    /**
+     * Return the column names for the course column.
+     * 
+     * @return course_column
      */
     public static String[] getCourseColumn() {
         return course_column;
     }
 
-    /*
-     * Return the "Course" for unenrolled student
+    /**
+     * Return the "Course" for unenrolled student.
+     * 
+     * @return unenrolled_course
      */
     public static Course notEnrolled() {
         return unenrolled_course;

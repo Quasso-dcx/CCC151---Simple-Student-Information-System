@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import control.Data_Manager;
 
-/*
+/**
  * Facilitates the creation and functionalities of the tables
  */
 public class Table_Manager {
@@ -20,7 +20,7 @@ public class Table_Manager {
         processStudentTable();
     }
 
-    /*
+    /**
      * Process the initial data and the functionalities of the student table
      */
     private void processStudentTable() {
@@ -46,7 +46,7 @@ public class Table_Manager {
                 student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
     }
 
-    /*
+    /**
      * Process the initial data and the functionalities of the course table
      */
     private void processCourseTable() {
@@ -75,15 +75,17 @@ public class Table_Manager {
         }
     }
 
-    /*
-     * Return the student table
+    /**
+     * For getting the student table.
+     * @return Table_Manager.student_table
      */
     public static JTable getStudentTable() {
         return Table_Manager.students_table;
     }
 
-    /*
-     * Return the course table
+    /**
+     * For getting the course table.
+     * @return Table_Manager.courses_table
      */
     public static JTable getCourseTable() {
         return Table_Manager.courses_table;
