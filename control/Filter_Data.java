@@ -12,6 +12,7 @@ public class Filter_Data {
     private static DefaultTableModel def_model;
     private static TableRowSorter<DefaultTableModel> row_sorter;
 
+    private static int row_count = -1;
     public Filter_Data() {
     }
 
@@ -22,5 +23,10 @@ public class Filter_Data {
         table.getRowSorter().toggleSortOrder(0); // to still sort the filtered data based on the first column
 
         row_sorter.setRowFilter(RowFilter.regexFilter(input_search, column_index));
+        row_count = table.getRowCount();
+    }
+
+    public static int rowCount(){
+        return Filter_Data.row_count;
     }
 }

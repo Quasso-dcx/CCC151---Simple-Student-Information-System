@@ -39,15 +39,11 @@ public class Table_Manager {
         // auto sort based on the first column
         students_table.getRowSorter().toggleSortOrder(0);
 
-        // traverse the course list
-        for (Course course : Data_Manager.coursesList().values()) {
-            // traverse the students in the course then add their details to the tables
-            for (Student student : course.getBlock()) {
-                student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
-                        student.getMiddleName(),
-                        student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
-            }
-        }
+        // traverse the student list
+        for (Student student : Data_Manager.studentList().values())
+            student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
+                student.getMiddleName(),
+                student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
     }
 
     /*

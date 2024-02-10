@@ -99,8 +99,6 @@ public class SSISMainDisplay extends JFrame {
         display_table = student_table = Table_Manager.getStudentTable();
         course_table = Table_Manager.getCourseTable();
 
-        new Filter_Data();
-
         bannerAreaDisplay();
         optionAreaDisplay();
         filterAreaDisplay();
@@ -134,7 +132,7 @@ public class SSISMainDisplay extends JFrame {
             // to prevent confusion to what table currently displayed
             students_button.setEnabled(false);
             courses_button.setEnabled(true);
-
+            
             display_table.getSelectionModel().clearSelection(); // clear the previous table selection
             display_table = student_table; // change the table to be displayed
             refreshTable(); // refresh the display table
@@ -280,7 +278,7 @@ public class SSISMainDisplay extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //turn off the filtering when no column is selected
                 if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex() - 1); // cancel the filter
+                    Filter_Data.rowFilter(display_table, "", 0); // cancel the filter
             }
         });
 
@@ -320,7 +318,7 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(null, "Select a column.", "Invalid Column",
                             JOptionPane.CLOSED_OPTION);
                 else if (search_input.getText().equals("") || search_input.getText().equals("Search Here")){
-                    Filter_Data.rowFilter(display_table, "", column_names.getSelectedIndex() - 1); // cancel the filter
+                    Filter_Data.rowFilter(display_table, "", 0); // cancel the filter
                     JOptionPane.showMessageDialog(null, "Enter something to search.", "Empty Search",
                             JOptionPane.CLOSED_OPTION);
                 }

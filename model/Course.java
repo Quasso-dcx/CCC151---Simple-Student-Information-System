@@ -10,7 +10,7 @@ import control.Data_Manager;
 public class Course {
     private String code;
     private String name;
-    private ArrayList<Student> block = new ArrayList<>();
+    private ArrayList<String> block_ID = new ArrayList<>(); //store only ID Numbers
 
     public Course(String code, String name) {
         this.code = code;
@@ -22,7 +22,7 @@ public class Course {
      */
 
     public boolean isEmpty() {
-        return block.isEmpty();
+        return block_ID.isEmpty();
     }
 
     public void setCourseCode(String code) {
@@ -41,8 +41,8 @@ public class Course {
         return this.name;
     }
 
-    public ArrayList<Student> getBlock() {
-        return this.block;
+    public ArrayList<String> getBlockIDs() {
+        return this.block_ID;
     }
 
     /*
@@ -52,11 +52,14 @@ public class Course {
         /*
          * Transfer all students to unenrolled course then clear the block after
          */
-        for (int student_count = 0; student_count < block.size(); student_count++) {
-            block.get(student_count).setCourseCode(Data_Manager.notEnrolled().getCourseCode());
-            block.get(student_count).setCourseName(Data_Manager.notEnrolled().getCourseName());
-            Data_Manager.notEnrolled().getBlock().add(block.get(student_count));
+        for (int student_count = 0; student_count < block_ID.size(); student_count++) {
+            Student unenrolled_student = Data_Manager.studentList().get(new StudentKeyMaker().keyMaker(this.getCourseCode(), block_ID.get(student_count)));
+            
+            unenrolled_student.setCourseCode(Data_Manager.notEnrolled().getCourseCode());
+            unenrolled_student.setCourseName(Data_Manager.notEnrolled().getCourseName());
+            Data_Manager.notEnrolled().getBlockIDs().add(unenrolled_student.getIDNumber());
         }
-        block.clear();
+        
+        block_ID.clear();
     }
 }

@@ -11,6 +11,7 @@ import javax.swing.JTable;
 
 import model.Course;
 import model.Student;
+import model.StudentKeyMaker;
 import model.Table_Manager;
 
 /*
@@ -22,6 +23,7 @@ public class Data_Manager {
     private static final String course_file = "CSV_Files\\Courses.csv";
 
     private static HashMap<String, Course> courses = new HashMap<>(); // store the registered courses
+    private static HashMap<String, Student> students = new HashMap<>(); // store the registered students
     private static Course unenrolled_course = new Course("N/A", "Unenrolled"); // default course
     private static String[] course_column;
     private static String[] student_column;
@@ -119,7 +121,7 @@ public class Data_Manager {
             // read the lines from the file
             while ((line = reader.readLine()) != null) {
                 // split the lines per column from writer
-                String[] row = line.replaceAll("\"", "").split(",");
+                String[] row = line.split(",");
 
                 // incase there is not enought split words
                 if (row.length != student_column.length) {
@@ -129,17 +131,21 @@ public class Data_Manager {
                     continue;
                 }
 
-                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5], "N/A", "Unenrolled");
+                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5],
+                        unenrolled_course.getCourseCode(), unenrolled_course.getCourseName());
                 // traverse the course list for the enrolled course
 
-                Course course = unenrolled_course;  //incase the course recorded was deleted or something happened
+                Course course = unenrolled_course; // incase the course recorded was deleted or something happened
                 if (courses.containsKey(row[6])) {
                     course = courses.get(row[6]);
                 }
 
                 new_student.setCourseCode(course.getCourseCode());
                 new_student.setCourseName(course.getCourseName());
-                course.getBlock().add(new_student);
+
+                String new_student_key = new StudentKeyMaker().keyMaker(new_student.getCourseCode(), new_student.getIDNumber());
+                students.put(new_student_key, new_student);
+                course.getBlockIDs().add(new_student.getIDNumber());
             }
             reader.close();
         } catch (Exception e) {
@@ -183,6 +189,10 @@ public class Data_Manager {
      */
     public static HashMap<String, Course> coursesList() {
         return courses;
+    }
+
+    public static HashMap<String, Student> studentList(){
+        return students;
     }
 
     /*
