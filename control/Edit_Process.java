@@ -131,7 +131,7 @@ public class Edit_Process {
                 Course old_course = Data_Manager.coursesList().get(course_key);
 
                 // get the new course of the student
-                Course change_course = Data_Manager.coursesList().get(new_course_code);
+                Course new_course = Data_Manager.coursesList().get(new_course_code);
 
                 /*
                  * Update the key of the student by removing it and adding it again with a new
@@ -141,7 +141,7 @@ public class Edit_Process {
                 Data_Manager.studentList().put(new_student_key, editing_student);
 
                 old_course.getBlockIDs().remove(ID_num); // remove student from the old course
-                change_course.getBlockIDs().add(new_ID_number); // enroll student to the new course
+                new_course.getBlockIDs().add(new_ID_number); // enroll student to the new course
             }
 
             /*
@@ -256,10 +256,10 @@ public class Edit_Process {
             }
 
             /*
-             * Since JTable and TableModel doesn't have the same row counting, traverse the
-             * whole table for course then if the course to edit is found, use the row
-             * number selected_row_model is for the model and table_row_selected is for the
-             * table.
+             * Since JTable and TableModel doesn't have the same row counting (because
+             * of auto sorting), traverse the whole table for course then if the course
+             * to edit is found, use the row number selected_row_model is for the model
+             * and table_row_selected is for the table.
              */
             for (int selected_row_model = 0; selected_row_model < course_table_model
                     .getRowCount(); selected_row_model++) {
@@ -269,7 +269,7 @@ public class Edit_Process {
                                 .equals(course_table.getValueAt(table_row_selected, 1))) {
                     JTable student_table = Table_Manager.getStudentTable();
 
-                    // traverse the student table since the jtable doesnt update automatically
+                    // traverse the student table since the jtable doesn't update automatically
                     for (int student_row_count = 0; student_row_count < student_table.getModel()
                             .getRowCount(); student_row_count++) {
                         if (student_table.getModel().getValueAt(student_row_count, 6)

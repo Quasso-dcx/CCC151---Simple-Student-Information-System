@@ -60,15 +60,9 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to
-                                                                                // avoid
-                                                                                // ','
-                                                                                // in
-                                                                                // the
-                                                                                // end
+                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
-                        writer.write(table.getValueAt(row, column).toString()
-                                + ",");
+                        writer.write(table.getValueAt(row, column).toString() + ",");
                 }
                 writer.write("\n");
             }
@@ -101,15 +95,9 @@ public class Data_Manager {
             for (int row = 0; row < table.getRowCount(); row++) {
                 for (int column = 0; column < table.getColumnCount(); column++) {
                     if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to
-                                                                                // avoid
-                                                                                // ','
-                                                                                // in
-                                                                                // the
-                                                                                // end
+                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
-                        writer.write(table.getValueAt(row, column).toString()
-                                + ",");
+                        writer.write(table.getValueAt(row, column).toString() + ",");
                 }
                 writer.write("\n");
             }
@@ -144,24 +132,25 @@ public class Data_Manager {
                     continue;
                 }
 
-                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4],
-                        row[5],
-                        unenrolled_course.getCourseCode(),
-                        unenrolled_course.getCourseName());
-                // traverse the course list for the enrolled course
+                // create a new student
+                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5],
+                        unenrolled_course.getCourseCode(), unenrolled_course.getCourseName());
 
-                Course course = unenrolled_course; // incase the course recorded was deleted or
-                                                   // something happened
+                // incase the course recorded was deleted orsomething happened
+                Course course = unenrolled_course;
                 if (courses.containsKey(row[6])) {
                     course = courses.get(row[6]);
                 }
 
+                // set the course code attribute of the student
                 new_student.setCourseCode(course.getCourseCode());
 
-                String new_student_key = new StudentKeyMaker().keyMaker(
-                        new_student.getCourseCode(),
+                // store the new student to the student hashmap with its key
+                String new_student_key = new StudentKeyMaker().keyMaker(new_student.getCourseCode(),
                         new_student.getIDNumber());
                 students.put(new_student_key, new_student);
+
+                // add the ID number of the student to the enrolled course
                 course.getBlockIDs().add(new_student.getIDNumber());
             }
             reader.close();
@@ -192,6 +181,7 @@ public class Data_Manager {
                     System.out.println();
                     continue;
                 }
+                
                 // add the course in the course list
                 courses.put(row[0], new Course(row[0], row[1]));
             }

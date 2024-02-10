@@ -73,7 +73,7 @@ public class SSISMainDisplay extends JFrame {
         this.setVisible(true);
 
         /*
-         * ask the user if they want to save their actions in the csv file. Only save
+         * Ask the user if they want to save their actions in the csv file. Only save
          * the file after closing the app / clicking the save button.
          */
         WindowListener exitListener = new WindowAdapter() {

@@ -4,6 +4,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 import model.Course;
 import model.Student;
 import model.StudentKeyMaker;
@@ -12,7 +13,6 @@ import model.StudentKeyMaker;
  * Facilitates the addition of the rows in the tables and their relations.
  */
 public class Add_Process {
-
     private JTable table;
     private JDialog add_dialog;
     private boolean theresDuplicate;
@@ -123,7 +123,7 @@ public class Add_Process {
 
         /*
          * Filter the table and check if there are rows with the same course name as the
-         * new course. Check only if there is no duplicate with the name to prevent
+         * new course. Check only if there is no duplicate with the code to prevent
          * multiple errors popping up.
          */
         if (!theresDuplicate) {

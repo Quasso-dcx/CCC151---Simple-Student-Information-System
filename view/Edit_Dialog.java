@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Arrays;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -263,9 +262,8 @@ public class Edit_Dialog extends JDialog {
         // list the courses available in a readable way
         String[] courses_listed = new String[Data_Manager.coursesList().size()];
         int course_count = 0;
-        for (Map.Entry<String, Course> entry : Data_Manager.coursesList().entrySet()) {
-            Course value = entry.getValue();
-            courses_listed[course_count] = value.getCourseCode() + "-" + value.getCourseName();
+        for (Course course : Data_Manager.coursesList().values()){
+            courses_listed[course_count] = course.getCourseCode() + "-" + course.getCourseName();
             course_count++;
         }
         Arrays.sort(courses_listed);

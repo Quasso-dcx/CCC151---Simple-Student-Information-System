@@ -34,6 +34,7 @@ public class Table_Manager {
         };
         student_table_model.setColumnIdentifiers(Data_Manager.getStudentColumn());
         students_table = new JTable(student_table_model);
+        students_table.getTableHeader().setReorderingAllowed(false); // to make columns not movable
         // sort the table (click the column header)
         students_table.setAutoCreateRowSorter(true);
         // auto sort based on the first column
@@ -42,8 +43,8 @@ public class Table_Manager {
         // traverse the student list
         for (Student student : Data_Manager.studentList().values())
             student_table_model.addRow(new Object[] { student.getSurname(), student.getFirstName(),
-                student.getMiddleName(),
-                student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
+                    student.getMiddleName(),
+                    student.getIDNumber(), student.getYearLevel(), student.getGender(), student.getCourseCode() });
     }
 
     /**
@@ -60,6 +61,7 @@ public class Table_Manager {
         };
         courses_table_model.setColumnIdentifiers(Data_Manager.getCourseColumn());
         courses_table = new JTable(courses_table_model);
+        courses_table.getTableHeader().setReorderingAllowed(false); // to make columns not movable
         // sort the table (click the column header)
         courses_table.setAutoCreateRowSorter(true);
         // auto sort based on the first column
@@ -77,6 +79,7 @@ public class Table_Manager {
 
     /**
      * For getting the student table.
+     * 
      * @return Table_Manager.student_table
      */
     public static JTable getStudentTable() {
@@ -85,6 +88,7 @@ public class Table_Manager {
 
     /**
      * For getting the course table.
+     * 
      * @return Table_Manager.courses_table
      */
     public static JTable getCourseTable() {
