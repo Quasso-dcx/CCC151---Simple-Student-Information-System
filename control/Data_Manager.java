@@ -38,76 +38,6 @@ public class Data_Manager {
     }
 
     /**
-     * Process the saving of the data from the course table to the course writer
-     * file.
-     */
-    public static void courseFileSaver() {
-        try {
-            // setup the table and the writer
-            JTable table = Table_Manager.getCourseTable();
-            FileWriter writer = new FileWriter(new File(course_file));
-
-            // save the column names first
-            for (int column = 0; column < table.getColumnCount(); column++) {
-                if (column == table.getColumnCount() - 1)
-                    writer.write(table.getColumnName(column)); // to avoid ',' in the end
-                else
-                    writer.write(table.getColumnName(column) + ",");
-            }
-            writer.write("\n");
-
-            // save the data from the table
-            for (int row = 0; row < table.getRowCount(); row++) {
-                for (int column = 0; column < table.getColumnCount(); column++) {
-                    if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
-                    else
-                        writer.write(table.getValueAt(row, column).toString() + ",");
-                }
-                writer.write("\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Process the saving of the data from the student table to the student writer
-     * file.
-     */
-    public static void studentFileSaver() {
-        try {
-            // setup the table and the writer
-            JTable table = Table_Manager.getStudentTable();
-            FileWriter writer = new FileWriter(new File(student_file));
-
-            // save the column names first
-            for (int column = 0; column < table.getColumnCount(); column++) {
-                if (column == table.getColumnCount() - 1)
-                    writer.write(table.getColumnName(column)); // to avoid ',' in the end
-                else
-                    writer.write(table.getColumnName(column) + ",");
-            }
-            writer.write("\n");
-
-            // save the data from the table
-            for (int row = 0; row < table.getRowCount(); row++) {
-                for (int column = 0; column < table.getColumnCount(); column++) {
-                    if (column == table.getColumnCount() - 1)
-                        writer.write(table.getValueAt(row, column).toString()); // to avoid ',' in the end
-                    else
-                        writer.write(table.getValueAt(row, column).toString() + ",");
-                }
-                writer.write("\n");
-            }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Process the reading of the data from the student writer file to the student
      * table.
      */
@@ -132,18 +62,15 @@ public class Data_Manager {
                     continue;
                 }
 
-                // create a new student
-                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5],
-                        unenrolled_course.getCourseCode(), unenrolled_course.getCourseName());
-
                 // incase the course recorded was deleted orsomething happened
                 Course course = unenrolled_course;
                 if (courses.containsKey(row[6])) {
                     course = courses.get(row[6]);
                 }
 
-                // set the course code attribute of the student
-                new_student.setCourseCode(course.getCourseCode());
+                // create a new student
+                Student new_student = new Student(row[0], row[1], row[2], row[3], row[4], row[5],
+                        course.getCourseCode());
 
                 // store the new student to the student hashmap with its key
                 String new_student_key = new StudentKeyMaker().keyMaker(new_student.getCourseCode(),
@@ -181,12 +108,82 @@ public class Data_Manager {
                     System.out.println();
                     continue;
                 }
-                
+
                 // add the course in the course list
                 courses.put(row[0], new Course(row[0], row[1]));
             }
             reader.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Process the saving of the data from the course table to the course writer
+     * file.
+     */
+    public static void courseFileSaver() {
+        try {
+            // setup the table and the writer
+            JTable course_table = Table_Manager.getCourseTable();
+            FileWriter writer = new FileWriter(new File(course_file));
+
+            // save the column names first
+            for (int column = 0; column < course_table.getColumnCount(); column++) {
+                if (column == course_table.getColumnCount() - 1)
+                    writer.write(course_table.getColumnName(column)); // to avoid ',' in the end
+                else
+                    writer.write(course_table.getColumnName(column) + ",");
+            }
+            writer.write("\n");
+
+            // save the data from the table
+            for (int row = 0; row < course_table.getRowCount(); row++) {
+                for (int column = 0; column < course_table.getColumnCount(); column++) {
+                    if (column == course_table.getColumnCount() - 1)
+                        writer.write(course_table.getValueAt(row, column).toString()); // to avoid ',' in the end
+                    else
+                        writer.write(course_table.getValueAt(row, column).toString() + ",");
+                }
+                writer.write("\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Process the saving of the data from the student table to the student writer
+     * file.
+     */
+    public static void studentFileSaver() {
+        try {
+            // setup the table and the writer
+            JTable student_table = Table_Manager.getStudentTable();
+            FileWriter writer = new FileWriter(new File(student_file));
+
+            // save the column names first
+            for (int column = 0; column < student_table.getColumnCount(); column++) {
+                if (column == student_table.getColumnCount() - 1)
+                    writer.write(student_table.getColumnName(column)); // to avoid ',' in the end
+                else
+                    writer.write(student_table.getColumnName(column) + ",");
+            }
+            writer.write("\n");
+
+            // save the data from the table
+            for (int row = 0; row < student_table.getRowCount(); row++) {
+                for (int column = 0; column < student_table.getColumnCount(); column++) {
+                    if (column == student_table.getColumnCount() - 1)
+                        writer.write(student_table.getValueAt(row, column).toString()); // to avoid ',' in the end
+                    else
+                        writer.write(student_table.getValueAt(row, column).toString() + ",");
+                }
+                writer.write("\n");
+            }
+            writer.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

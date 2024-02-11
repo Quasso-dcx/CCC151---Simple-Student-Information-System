@@ -5,7 +5,7 @@ import view.SSISMainDisplay;
  * Runs the SSIS app.
  *
  * @author Caine Ivan R. Bautista
- * @date January 31, 2024
+ * @date January 31, 2024 to Febuary 11, 2024
  */
 public class Main {
     public static void main(String[] args) {

@@ -3,11 +3,14 @@ package view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -57,15 +60,15 @@ public class Add_Dialog extends JDialog {
 
     private Add_Process add_data;
 
-    public Add_Dialog(JTable table) {
+    public Add_Dialog(JTable table, JFrame main) {
         // setup the dialog
         this.setTitle("Adding Item:");
         this.getContentPane().setPreferredSize(dialog_dimension);
         this.setResizable(false);
         this.setLayout(grid_bag_layout);
         this.pack();
-        this.setVisible(true);
-        this.setModal(true);
+        this.setLocationRelativeTo(main);
+        this.setModalityType(DEFAULT_MODALITY_TYPE);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         add_data = new Add_Process(table, this);
@@ -119,15 +122,16 @@ public class Add_Dialog extends JDialog {
         layout_Constraints.gridwidth = 2;
         add_button.setFocusable(false);
         add_button.setToolTipText("Add the item to the table.");
-        add_button.addActionListener(e -> {
-            // check if there is atleast one field empty
-            if (course_code_data.getText().isEmpty() || course_name_data.getText().isEmpty())
-                JOptionPane.showMessageDialog(add_button, "Fill all fields.");
-
-            // add the new data to the table then close the dialog
-            else
-                add_data.courseAdd(course_code_data.getText().toString(), course_name_data.getText().toString());
-
+        add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // check if there is atleast one field empty
+                if (course_code_data.getText().isEmpty() || course_name_data.getText().isEmpty())
+                    JOptionPane.showMessageDialog(Add_Dialog.this, "Fill all fields.");
+                // add the new data to the table then close the dialog
+                else
+                    add_data.courseAdd(course_code_data.getText().toString(), course_name_data.getText().toString());
+            }
         });
         this.add(add_button, layout_Constraints);
     }
@@ -220,7 +224,7 @@ public class Add_Dialog extends JDialog {
         // list the courses available in a readable way
         String[] courses_listed = new String[Data_Manager.coursesList().size()];
         int course_count = 0;
-        for (Course course : Data_Manager.coursesList().values()){
+        for (Course course : Data_Manager.coursesList().values()) {
             courses_listed[course_count] = course.getCourseCode() + "-" + course.getCourseName();
             course_count++;
         }
@@ -228,7 +232,9 @@ public class Add_Dialog extends JDialog {
 
         course_data = new JComboBox<>(courses_listed);
         course_data.setPreferredSize(new Dimension(300, 30));
-        course_data.setSelectedItem("N/A-Unenrolled"); // set the default selection to unenrolled
+        // set the default selection to unenrolled
+        course_data.setSelectedItem(
+                Data_Manager.notEnrolled().getCourseCode() + "-" + Data_Manager.notEnrolled().getCourseName());
         course_data.addActionListener(e -> {
             course_data.setToolTipText(course_data.getSelectedItem().toString());
         });
@@ -242,21 +248,21 @@ public class Add_Dialog extends JDialog {
         add_button = new JButton("Add Item");
         add_button.setFocusable(false);
         add_button.setToolTipText("Add the item to the table.");
-        add_button.addActionListener(e -> {
-            // check if there is atleast one field empty
-            if (surname_data.getText().isEmpty() || first_name_data.getText().isEmpty() ||
-                    middle_name_data.getText().isEmpty() || ID_number_data.getText().isEmpty() ||
-                    gender_data.getText().isEmpty())
-                JOptionPane.showMessageDialog(add_button, "Fill all fields.");
+        add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // check if there is atleast one field empty
+                if (surname_data.getText().isEmpty() || first_name_data.getText().isEmpty() ||
+                        middle_name_data.getText().isEmpty() || ID_number_data.getText().isEmpty() ||
+                        gender_data.getText().isEmpty())
+                    JOptionPane.showMessageDialog(Add_Dialog.this, "Fill all fields.");
 
-            // add the new data to the table then close the dialog
-            else {
-                String[] new_student_course = course_data.getSelectedItem().toString().split("-");
-
-                add_data.studentAdd(surname_data.getText().toString(), first_name_data.getText().toString(),
-                        middle_name_data.getText().toString(), ID_number_data.getText().toString(),
-                        year_level_data.getSelectedItem().toString(),
-                        gender_data.getText().toString(), new_student_course[0], new_student_course[1]);
+                // add the new data to the table then close the dialog
+                else
+                    add_data.studentAdd(surname_data.getText().toString(), first_name_data.getText().toString(),
+                            middle_name_data.getText().toString(), ID_number_data.getText().toString(),
+                            year_level_data.getSelectedItem().toString(),
+                            gender_data.getText().toString(), course_data.getSelectedItem().toString().split("-")[0]);
             }
         });
         layout_Constraints.fill = GridBagConstraints.HORIZONTAL;

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 import model.Course;
 import model.Student;
@@ -28,6 +27,7 @@ public class Edit_Process {
     /**
      * If the item to be edited is in the student table.
      * 
+     * @param table_row_selected
      * @param new_surname
      * @param new_first_name
      * @param new_middle_name
@@ -36,15 +36,12 @@ public class Edit_Process {
      * @param new_gender
      * @param new_course_code
      */
-    public void studentEdit(String new_surname, String new_first_name, String new_middle_name, String new_ID_number,
-            String new_year_level, String new_gender, String new_course_code) {
+    public void studentEdit(int table_row_selected, String new_surname, String new_first_name, String new_middle_name,
+            String new_ID_number, String new_year_level, String new_gender, String new_course_code) {
 
         JTable student_table = this.table;
-        DefaultTableModel student_table_model = (DefaultTableModel) student_table.getModel();
-        int table_row_selected = student_table.getSelectedRow();
 
         theresDuplicate = false;
-
         /*
          * Filter the table and check if there are rows with the same name as the edit
          * student. Also, check if the attribute of the student is not the same with the
@@ -55,20 +52,20 @@ public class Edit_Process {
             selected_row[column] = student_table.getValueAt(table_row_selected, column).toString();
         }
 
-        String[] remaining_row = new String[table.getColumnCount()]; // remaining row after filtering
+        String[] remaining_row = new String[student_table.getColumnCount()]; // remaining row after filtering
 
         String[] column_data = { new_surname, new_first_name, new_middle_name };
         int[] column_indices = { 0, 1, 2 };
         Filter_Data.multipleFilter(student_table, column_data, column_indices);
 
-        if (table.getRowCount() > 0) {
+        if (student_table.getRowCount() > 0) {
             for (int column = 0; column < student_table.getColumnCount(); column++) {
                 remaining_row[column] = student_table.getValueAt(0, column).toString();
             }
 
             // if the remaining row and selected row are not the same
             if (!Arrays.equals(remaining_row, selected_row)) {
-                JOptionPane.showMessageDialog(table,
+                JOptionPane.showMessageDialog(student_table,
                         "Student: " + new_surname + ", " + new_first_name + " " + new_middle_name
                                 + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -82,15 +79,15 @@ public class Edit_Process {
          * multiple errors popping up.
          */
         if (!theresDuplicate) {
-            Filter_Data.rowFilter(table, new_ID_number, 3);
-            if (table.getRowCount() > 0) {
+            Filter_Data.rowFilter(student_table, new_ID_number, 3);
+            if (student_table.getRowCount() > 0) {
                 for (int column = 0; column < student_table.getColumnCount(); column++) {
                     remaining_row[column] = student_table.getValueAt(0, column).toString();
                 }
 
                 // if the remaining row and selected row are not the same
                 if (!Arrays.equals(remaining_row, selected_row)) {
-                    JOptionPane.showMessageDialog(table,
+                    JOptionPane.showMessageDialog(student_table,
                             "ID Number: " + new_ID_number
                                     + "\nalready belongs to another student.",
                             "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -99,12 +96,12 @@ public class Edit_Process {
             }
         }
 
-        Filter_Data.rowFilter(table, "", 0); // cancel the filter
+        Filter_Data.cancelFilter(student_table); // cancel the filter
+
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
             // get the old course key of the student and its ID number
-            String course_key = student_table.getValueAt(table_row_selected, student_table.getColumnCount() - 1)
-                    .toString();
+            String course_key = student_table.getValueAt(table_row_selected, 6).toString();
             String ID_num = student_table.getValueAt(table_row_selected, 3).toString();
 
             // get the student
@@ -120,16 +117,17 @@ public class Edit_Process {
             editing_student.setGender(new_gender);
             editing_student.setCourseCode(new_course_code);
 
-            String new_student_key = new StudentKeyMaker().keyMaker(new_course_code, new_ID_number);
-
             /*
-             * If the course of the student has been changed, unenroll from its previous
-             * course then enroll to its new.
+             * If the course and/or the ID number of the student has been changed, unenroll
+             * from its previous course then enroll to its new.
              */
-            if (!student_table.getValueAt(table_row_selected, 6).equals(editing_student.getCourseCode())) {
+            if (!student_table.getValueAt(table_row_selected, 6).equals(new_course_code)
+                    || !student_table.getValueAt(table_row_selected, 3).equals(new_ID_number)) {
+                // create a new key
+                String new_student_key = new StudentKeyMaker().keyMaker(new_course_code, new_ID_number);
+
                 // get the old course of the student
                 Course old_course = Data_Manager.coursesList().get(course_key);
-
                 // get the new course of the student
                 Course new_course = Data_Manager.coursesList().get(new_course_code);
 
@@ -144,52 +142,30 @@ public class Edit_Process {
                 new_course.getBlockIDs().add(new_ID_number); // enroll student to the new course
             }
 
-            /*
-             * Since JTable and its TableModel doesn't have the same row counting (because
-             * of auto sorting), traverse the whole table for course then if the course to
-             * edit is found, use the row number. student_row is for the model and
-             * table_row_selected is for the table.
-             */
-            for (int selected_row_count = 0; selected_row_count < student_table_model
-                    .getRowCount(); selected_row_count++) {
-                if (student_table_model.getValueAt(selected_row_count, 0)
-                        .equals(student_table.getValueAt(table_row_selected, 0))
-                        && student_table_model.getValueAt(selected_row_count, 1)
-                                .equals(student_table.getValueAt(table_row_selected, 1))
-                        && student_table_model.getValueAt(selected_row_count, 2)
-                                .equals(student_table.getValueAt(table_row_selected, 2))
-                        && student_table_model.getValueAt(selected_row_count, 3)
-                                .equals(student_table.getValueAt(table_row_selected, 3))) {
+            // change the values in the row of the edited course
+            student_table.setValueAt(new_surname, table_row_selected, 0);
+            student_table.setValueAt(new_first_name, table_row_selected, 1);
+            student_table.setValueAt(new_middle_name, table_row_selected, 2);
+            student_table.setValueAt(new_ID_number, table_row_selected, 3);
+            student_table.setValueAt(new_year_level, table_row_selected, 4);
+            student_table.setValueAt(new_gender, table_row_selected, 5);
+            student_table.setValueAt(new_course_code, table_row_selected, 6);
 
-                    // change the values in the row of the edited course
-                    student_table_model.setValueAt(new_surname, selected_row_count, 0);
-                    student_table_model.setValueAt(new_first_name, selected_row_count, 1);
-                    student_table_model.setValueAt(new_middle_name, selected_row_count, 2);
-                    student_table_model.setValueAt(new_ID_number, selected_row_count, 3);
-                    student_table_model.setValueAt(new_year_level, selected_row_count, 4);
-                    student_table_model.setValueAt(new_gender, selected_row_count, 5);
-                    student_table_model.setValueAt(new_course_code, selected_row_count, 6);
-
-                    // for confirmation
-                    JOptionPane.showMessageDialog(null, "Edit Success.");
-                    edit_dialog.dispose();
-                    break;
-                }
-            }
+            // for confirmation
+            JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
+            edit_dialog.dispose();
         }
     }
 
     /**
      * If the item to be edited is in the course table.
      * 
+     * @param table_row_selected
      * @param new_course_code
      * @param new_course_name
      */
-    public void courseEdit(String new_course_code, String new_course_name) {
+    public void courseEdit(int table_row_selected, String new_course_code, String new_course_name) {
         JTable course_table = this.table;
-        DefaultTableModel course_table_model = (DefaultTableModel) course_table.getModel();
-        int table_row_selected = course_table.getSelectedRow();
-
         theresDuplicate = false;
 
         /*
@@ -208,18 +184,21 @@ public class Edit_Process {
          * new course. Check only if there is no duplicate with the name to prevent
          * multiple errors popping up.
          */
-        if (!theresDuplicate) {
-            Filter_Data.rowFilter(table, new_course_name, 1);
-            if (table.getRowCount() > 0) {
-                JOptionPane.showMessageDialog(table, "Course Name: " + new_course_name + "\nalready exist.",
+        if (!theresDuplicate && !course_table.getValueAt(table_row_selected, 1).equals(new_course_name)) {
+            Filter_Data.rowFilter(course_table, new_course_name, 1);
+            // if there are still rows remaining, it means there is a duplicate
+            if (course_table.getRowCount() > 0) {
+                JOptionPane.showMessageDialog(course_table, "Course Name: " + new_course_name + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
                 theresDuplicate = true;
             }
         }
 
-        Filter_Data.rowFilter(table, "", 0); // cancel the filter
+        Filter_Data.cancelFilter(course_table); // cancel the filter
+
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
+            // get the course to be edited
             Course editing_course = Data_Manager.coursesList().get(course_table.getValueAt(table_row_selected, 0));
 
             // if the course code was edited
@@ -228,67 +207,51 @@ public class Edit_Process {
                 for (String ID_num : editing_course.getBlockIDs()) {
                     // get the student
                     String old_student_key = new StudentKeyMaker().keyMaker(editing_course.getCourseCode(), ID_num);
-                    Student student_transfer = Data_Manager.studentList().get(old_student_key);
+                    Student student = Data_Manager.studentList().get(old_student_key);
 
-                    student_transfer.setCourseCode(new_course_code); // change the course code attribute
+                    student.setCourseCode(new_course_code); // change the course code attribute
 
                     // new student key
-                    String new_student_transfer_key = new StudentKeyMaker().keyMaker(new_course_code, ID_num);
+                    String new_student_key = new StudentKeyMaker().keyMaker(new_course_code, ID_num);
 
                     /*
                      * Update the key of the student by removing it and adding it again with a new
                      * key.
                      */
                     Data_Manager.studentList().remove(old_student_key);
-                    Data_Manager.studentList().put(new_student_transfer_key, student_transfer);
+                    Data_Manager.studentList().put(new_student_key, student);
                 }
 
+                // change the course code in student table
+                JTable student_table = Table_Manager.getStudentTable();
+                String old_course_code = course_table.getValueAt(table_row_selected, 0).toString();
+
+                // traverse the student table since the jtable doesn't update automatically
+                Filter_Data.rowFilter(student_table, old_course_code, 6);
+                for (int student_row_count = 0; student_row_count < student_table.getRowCount(); student_row_count++) {
+                    student_table.setValueAt(new_course_code, student_row_count, 6);
+                }
+                Filter_Data.cancelFilter(student_table);
+
                 editing_course.setCourseCode(new_course_code); // change the course code
-                Data_Manager.coursesList().remove(course_table.getValueAt(table_row_selected, 0)); // remove the old map
+                Data_Manager.coursesList().remove(old_course_code); // remove the old map
                 Data_Manager.coursesList().put(new_course_code, editing_course); // add the new map w/ the edited key
+
+                course_table.setValueAt(new_course_code, table_row_selected, 0); // change the code in the course table
             }
 
-            // change the attributes for courseName of every student inside the course
+            // change the course name of the edited course if changed
             if (!course_table.getValueAt(table_row_selected, 1).equals(new_course_name)) {
                 editing_course = Data_Manager.coursesList().get(new_course_code);
 
                 editing_course.setCourseName(new_course_name); // change the course name
+
+                course_table.setValueAt(new_course_name, table_row_selected, 1); // change the name in course table
             }
 
-            /*
-             * Since JTable and TableModel doesn't have the same row counting (because
-             * of auto sorting), traverse the whole table for course then if the course
-             * to edit is found, use the row number selected_row_model is for the model
-             * and table_row_selected is for the table.
-             */
-            for (int selected_row_model = 0; selected_row_model < course_table_model
-                    .getRowCount(); selected_row_model++) {
-                if (course_table_model.getValueAt(selected_row_model, 0)
-                        .equals(course_table.getValueAt(table_row_selected, 0))
-                        && course_table_model.getValueAt(selected_row_model, 1)
-                                .equals(course_table.getValueAt(table_row_selected, 1))) {
-                    JTable student_table = Table_Manager.getStudentTable();
-
-                    // traverse the student table since the jtable doesn't update automatically
-                    for (int student_row_count = 0; student_row_count < student_table.getModel()
-                            .getRowCount(); student_row_count++) {
-                        if (student_table.getModel().getValueAt(student_row_count, 6)
-                                .equals(course_table_model.getValueAt(selected_row_model, 0))) {
-                            student_table.getModel().setValueAt(new_course_code, student_row_count,
-                                    student_table.getColumnCount() - 1);
-                        }
-                    }
-
-                    // change the values in the row of the edited course
-                    course_table_model.setValueAt(new_course_code, selected_row_model, 0);
-                    course_table_model.setValueAt(new_course_name, selected_row_model, 1);
-
-                    // for confirmation
-                    JOptionPane.showMessageDialog(null, "Edit Success.");
-                    edit_dialog.dispose();
-                    break;
-                }
-            }
+            // for confirmation
+            JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
+            edit_dialog.dispose();
         }
     }
 }

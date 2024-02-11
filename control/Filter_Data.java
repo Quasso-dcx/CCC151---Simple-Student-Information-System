@@ -53,4 +53,17 @@ public class Filter_Data {
 
         row_sorter.setRowFilter(RowFilter.andFilter(filters));
     }
+
+    /**
+     * Cancel the filter.
+     * @param table
+     */
+    public static void cancelFilter(JTable table){
+        def_model = (DefaultTableModel) table.getModel();
+        row_sorter = new TableRowSorter<DefaultTableModel>(def_model);
+        table.setRowSorter(row_sorter);
+        table.getRowSorter().toggleSortOrder(0); // to still sort the filtered data based on the first column
+
+        row_sorter.setRowFilter(null);
+    }
 }

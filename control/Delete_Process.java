@@ -38,8 +38,7 @@ public class Delete_Process {
          * Get the enrolled course of the student to be deleted using the course code
          * key.
          */
-        String course_key = student_table.getValueAt(table_row_selected, student_table_model.getColumnCount() - 1)
-                .toString();
+        String course_key = student_table.getValueAt(table_row_selected, 6).toString();
         Course course = Data_Manager.coursesList().get(course_key);
 
         // ask for confimation
@@ -64,20 +63,19 @@ public class Delete_Process {
         course.getBlockIDs().remove(student_ID);
 
         /*
-         * Since JTable and its TableModel doesn't have the same row counting (because
-         * of auto sorting), traverse the whole table for course then if the course to
-         * edit is found, use the row number. student_row is for the model and
-         * table_row_selected is for the table.
+         * Removing the selected row from the student table. Need to traverse the whole
+         * table because JTable doesn't have its own row remover, and the model needs to
+         * rely on JTable's getSelectedRow().
          */
-        for (int student_row = 0; student_row < student_table.getRowCount(); student_row++) {
-            if (student_table_model.getValueAt(student_row, 0).equals(student_table.getValueAt(table_row_selected, 0))
-                    && student_table_model.getValueAt(student_row, 1)
+        for (int row_count = 0; row_count < student_table_model.getRowCount(); row_count++) {
+            if (student_table_model.getValueAt(row_count, 0).equals(student_table.getValueAt(table_row_selected, 0))
+                    && student_table_model.getValueAt(row_count, 1)
                             .equals(student_table.getValueAt(table_row_selected, 1))
-                    && student_table_model.getValueAt(student_row, 2)
+                    && student_table_model.getValueAt(row_count, 2)
                             .equals(student_table.getValueAt(table_row_selected, 2))
-                    && student_table_model.getValueAt(student_row, 3)
+                    && student_table_model.getValueAt(row_count, 3)
                             .equals(student_table.getValueAt(table_row_selected, 3))) {
-                student_table_model.removeRow(student_row);
+                student_table_model.removeRow(row_count);
                 break;
             }
         }
@@ -89,7 +87,6 @@ public class Delete_Process {
     private void courseDelete() {
         // get the table of the course data and its model
         JTable course_table = Table_Manager.getCourseTable();
-        DefaultTableModel course_table_model = (DefaultTableModel) course_table.getModel();
 
         // get the selected row
         int table_row_selected = course_table.getSelectedRow();
@@ -116,31 +113,34 @@ public class Delete_Process {
         course.courseDelete();
         Data_Manager.coursesList().remove(course_key);
 
-        // removing the selected row from the course table
-        for (int row_item = 0; row_item < course_table_model.getRowCount(); row_item++) {
+        DefaultTableModel course_table_model = (DefaultTableModel) course_table.getModel();
+
+        /*
+         * Removing the selected row from the course table. Need to traverse the whole
+         * table because JTable doesn't have its own row remover, and the model needs to
+         * rely on JTable's getSelectedRow().
+         */
+        for (int row_count = 0; row_count < course_table_model.getRowCount(); row_count++) {
             /*
              * If the row found, change the data in the student table from the deleted
              * course to unenrolled.
              */
-            if (course_table_model.getValueAt(row_item, 0).equals(course_table.getValueAt(table_row_selected, 0))
-                    && course_table_model.getValueAt(row_item, 1)
+            if (course_table_model.getValueAt(row_count, 0).equals(course_table.getValueAt(table_row_selected, 0))
+                    && course_table_model.getValueAt(row_count, 1)
                             .equals(course_table.getValueAt(table_row_selected, 1))) {
 
                 JTable student_table = Table_Manager.getStudentTable();
-
                 /*
                  * Traverse the whole student table and change the data of the students enrolled
-                 * in the deleted course, then record unenrolled.
+                 * in the deleted course, then record unenrolled. Filter to shrink the size.
                  */
+                Filter_Data.rowFilter(student_table, course_key, 6);
                 for (int student_row = 0; student_row < student_table.getRowCount(); student_row++) {
-                    if (student_table.getModel().getValueAt(student_row, student_table.getColumnCount() - 1)
-                            .equals(course_table_model.getValueAt(row_item, 0))) {
-                        student_table.getModel().setValueAt(Data_Manager.notEnrolled().getCourseCode(), student_row,
-                                student_table.getColumnCount() - 1);
-                    }
+                    student_table.setValueAt(Data_Manager.notEnrolled().getCourseCode(), student_row, 6);
                 }
+                Filter_Data.cancelFilter(student_table);
 
-                course_table_model.removeRow(row_item); // remove the selected row from the course table
+                course_table_model.removeRow(row_count); // remove the selected row from the course table
                 break;
             }
 

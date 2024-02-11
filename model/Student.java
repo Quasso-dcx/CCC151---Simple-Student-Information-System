@@ -13,7 +13,7 @@ public class Student {
     private String course_code;
 
     public Student(String surname, String first_name, String middle_name, String ID_number, String year_level,
-            String gender, String course_code, String course_name) {
+            String gender, String course_code) {
         this.surname = surname;
         this.first_name = first_name;
         this.middle_name = middle_name;

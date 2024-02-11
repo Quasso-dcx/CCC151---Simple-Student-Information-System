@@ -32,10 +32,9 @@ public class Add_Process {
      * @param year_level_data
      * @param gender_data
      * @param course_code_data
-     * @param course_name_data
      */
     public void studentAdd(String surname_data, String first_name_data, String middle_name_data, String ID_number_data,
-            String year_level_data, String gender_data, String course_code_data, String course_name_data) {
+            String year_level_data, String gender_data, String course_code_data) {
 
         DefaultTableModel table_model = (DefaultTableModel) this.table.getModel();
         theresDuplicate = false;
@@ -47,8 +46,7 @@ public class Add_Process {
         String[] column_data = { surname_data, first_name_data, middle_name_data };
         int[] column_indices = { 0, 1, 2 };
         Filter_Data.multipleFilter(this.table, column_data, column_indices);
-
-        if (this.table.getRowCount() > 0) {
+        if (this.table.getRowCount() > 0) { // if there are still rows remaining, it means there is a duplicate
             JOptionPane.showMessageDialog(this.add_dialog,
                     "Student: " + surname_data + ", " + first_name_data + " " + middle_name_data + "\nalready exist.",
                     "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -62,7 +60,7 @@ public class Add_Process {
          */
         if (!theresDuplicate) {
             Filter_Data.rowFilter(this.table, ID_number_data, 3);
-            if (this.table.getRowCount() > 0) {
+            if (this.table.getRowCount() > 0) { // if there are still rows remaining, it means there is a duplicate
                 JOptionPane.showMessageDialog(this.add_dialog,
                         "ID Number: " + ID_number_data + "\nalready belongs to another student.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -70,7 +68,7 @@ public class Add_Process {
             }
         }
 
-        Filter_Data.rowFilter(this.table, "", 0); // cancel the filter
+        Filter_Data.cancelFilter(this.table); // cancel the filter
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
@@ -80,24 +78,23 @@ public class Add_Process {
 
             // create a new student
             Student new_student = new Student(surname_data, first_name_data, middle_name_data, ID_number_data,
-                    year_level_data, gender_data, course_code_data, course_name_data);
+                    year_level_data, gender_data, course_code_data);
 
             // record the ID of the new student to its course
-            course.getBlockIDs().add(new_student.getIDNumber());
+            course.getBlockIDs().add(ID_number_data);
 
             // put the new student with its key to the student hashmap
-            Data_Manager.studentList().put(new StudentKeyMaker().keyMaker(course_code_data, ID_number_data),
+            Data_Manager.studentList().put(new StudentKeyMaker().keyMaker(course.getCourseCode(), ID_number_data),
                     new_student);
 
             // add a new row to the student table
             table_model.addRow(
-                    new Object[] { new_student.getSurname(), new_student.getFirstName(), new_student.getMiddleName(),
-                            new_student.getIDNumber(), new_student.getYearLevel(), new_student.getGender(),
-                            new_student.getCourseCode() });
+                    new Object[] { surname_data, first_name_data, middle_name_data, ID_number_data,
+                            year_level_data, gender_data, course_code_data });
 
             // for confirmation
             JOptionPane.showMessageDialog(this.add_dialog, "Add Success.");
-            add_dialog.dispose();
+            this.add_dialog.dispose();
         }
     }
 
@@ -116,7 +113,7 @@ public class Add_Process {
          * the same key in the hashmap.
          */
         if (Data_Manager.coursesList().containsKey(course_code_data)) {
-            JOptionPane.showMessageDialog(this.table, "Course Code: " + course_code_data + "\nalready exist.",
+            JOptionPane.showMessageDialog(this.add_dialog, "Course Code: " + course_code_data + "\nalready exist.",
                     "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
             theresDuplicate = true;
         }
@@ -128,14 +125,14 @@ public class Add_Process {
          */
         if (!theresDuplicate) {
             Filter_Data.rowFilter(table, course_name_data, 1);
-            if (table.getRowCount() > 0) {
-                JOptionPane.showMessageDialog(this.table, "Course Name: " + course_name_data + "\nalready exist.",
+            if (table.getRowCount() > 0) { // if there are still rows remaining, it means there is a duplicate
+                JOptionPane.showMessageDialog(this.add_dialog, "Course Name: " + course_name_data + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
                 theresDuplicate = true;
             }
         }
 
-        Filter_Data.rowFilter(table, "", 0); // cancel the filter
+        Filter_Data.cancelFilter(this.table); // cancel the filter
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
@@ -145,8 +142,9 @@ public class Add_Process {
             // add a new row to the course table
             table_model.addRow(new Object[] { course_code_data, course_name_data });
 
+            // for confirmation
             JOptionPane.showMessageDialog(this.add_dialog, "Add Success.");
-            add_dialog.dispose();
+            this.add_dialog.dispose();
         }
     }
 }
