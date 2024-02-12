@@ -99,7 +99,7 @@ public class SSISMainDisplay extends JFrame {
         this.addWindowListener(exitListener);
 
         // create an instance of a Table_Manager where static tables are prepared
-        new Table_Manager();
+        new Table_Manager(SSISMainDisplay.this);
         display_table = student_table = Table_Manager.getStudentTable();
         course_table = Table_Manager.getCourseTable();
 
@@ -226,7 +226,7 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(SSISMainDisplay.this, "Please select a row.", "Delete Data Error",
                             JOptionPane.DEFAULT_OPTION);
                 else
-                    new Delete_Process(display_table); // facilitate the deletion process
+                    new Delete_Process(display_table, SSISMainDisplay.this); // facilitate the deletion process
             }
         });
         option_panel.add(delete_button);

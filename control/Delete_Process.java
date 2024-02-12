@@ -1,5 +1,6 @@
 package control;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -12,21 +13,21 @@ import model.Table_Manager;
  * Facilitates the deletion of the rows in the tables and their relations.
  */
 public class Delete_Process {
-    public Delete_Process(JTable table) {
+    public Delete_Process(JTable table, JFrame main) {
         /*
          * If the table selected is the student table, else use the data from the course
          * table
          */
         if (table.equals(Table_Manager.getStudentTable()))
-            studentDelete();
+            studentDelete(main);
         else
-            courseDelete();
+            courseDelete(main);
     }
 
     /**
      * If the row to be deleted is in the student table.
      */
-    private void studentDelete() {
+    private void studentDelete(JFrame main) {
         // get the table of the student data and its model
         JTable student_table = Table_Manager.getStudentTable();
         DefaultTableModel student_table_model = (DefaultTableModel) student_table.getModel();
@@ -42,7 +43,8 @@ public class Delete_Process {
         Course course = Data_Manager.coursesList().get(course_key);
 
         // ask for confimation
-        int choosen = JOptionPane.showConfirmDialog(student_table, "Are you sure?", "Confirmation",
+        int choosen = JOptionPane.showConfirmDialog(main,
+                "Currently enrolled in: " + course.getCourseCode() + ".\nDelete?", "Delete Confirmation",
                 JOptionPane.OK_CANCEL_OPTION);
 
         // if the choosen option is not okay, cancel the action
@@ -84,7 +86,7 @@ public class Delete_Process {
     /**
      * If the row to be deleted is in the course table.
      */
-    private void courseDelete() {
+    private void courseDelete(JFrame main) {
         // get the table of the course data and its model
         JTable course_table = Table_Manager.getCourseTable();
 
@@ -97,8 +99,8 @@ public class Delete_Process {
         Course course = Data_Manager.coursesList().get(course_key);
 
         // ask for confimation
-        int choosen = JOptionPane.showConfirmDialog(course_table,
-                "Currently enrolled: " + course.getBlockIDs().size() + " \nAre you sure?", "Confirmation",
+        int choosen = JOptionPane.showConfirmDialog(main,
+                "Currently enrolled: " + course.getBlockIDs().size() + " \nDelete?", "Delete Confirmation",
                 JOptionPane.OK_CANCEL_OPTION);
 
         // if the choosen option is not okay, cancel the action
