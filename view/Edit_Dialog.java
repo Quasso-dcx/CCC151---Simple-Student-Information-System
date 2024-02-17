@@ -61,7 +61,7 @@ public class Edit_Dialog extends JDialog {
 
     private Edit_Process edit_data;
 
-    public Edit_Dialog(JTable table, JFrame main) {
+    public Edit_Dialog(JTable table, JFrame main, int filter_column, String filter_input) {
         // setup the dialog
         this.setTitle("Edit Item:");
         this.getContentPane().setPreferredSize(dialog_dimension);
@@ -72,7 +72,7 @@ public class Edit_Dialog extends JDialog {
         this.setModalityType(DEFAULT_MODALITY_TYPE);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        edit_data = new Edit_Process(table, this);
+        edit_data = new Edit_Process(table, this, filter_column, filter_input);
 
         /*
          * If the table selected is the student table, else use the data from the course

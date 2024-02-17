@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -50,6 +51,7 @@ public class Table_Manager {
         // auto sort based on the first column
         students_table.getRowSorter().toggleSortOrder(0);
         tablePopupMenu = new JPopupMenu();
+
         JMenuItem count = new JMenuItem("Student Count");
         count.addActionListener(new ActionListener() {
             @Override
@@ -90,6 +92,8 @@ public class Table_Manager {
         // auto sort based on the first column
         courses_table.getRowSorter().toggleSortOrder(0);
         tablePopupMenu = new JPopupMenu();
+
+        // show how many course listed
         JMenuItem count = new JMenuItem("Course Count");
         count.addActionListener(new ActionListener() {
             @Override
@@ -100,6 +104,45 @@ public class Table_Manager {
             }
         });
         tablePopupMenu.add(count);
+
+        tablePopupMenu.add(new JSeparator());
+
+        // display number of unenrolled students
+        JMenuItem unenrolled_count = new JMenuItem("Unenrolled Students");
+        unenrolled_count.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(main,
+                        "There are currently " + Data_Manager.notEnrolled().getBlockIDs().size()
+                                + " student\\s unenrolled.",
+                        "Unenrolled count", JOptionPane.CLOSED_OPTION);
+            }
+        });
+        tablePopupMenu.add(unenrolled_count);
+
+        tablePopupMenu.add(new JSeparator());
+
+        // show the student count
+        JMenuItem details = new JMenuItem("Student Enrolled");
+        details.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (courses_table.getSelectedRow() < 0)
+                    JOptionPane.showMessageDialog(main,
+                            "Select a course.", "No Selection",
+                            JOptionPane.CLOSED_OPTION);
+                else {
+                    Course selected_course = Data_Manager.coursesList()
+                            .get(courses_table.getValueAt(courses_table.getSelectedRow(), 0));
+                    JOptionPane.showMessageDialog(main,
+                            "There are currently " + selected_course.getBlockIDs().size() + " students enrolled.",
+                            "Student enrolled",
+                            JOptionPane.CLOSED_OPTION);
+                }
+            }
+        });
+        tablePopupMenu.add(details);
+
         courses_table.setComponentPopupMenu(tablePopupMenu);
 
         // traverse the course list then add their details to the tables

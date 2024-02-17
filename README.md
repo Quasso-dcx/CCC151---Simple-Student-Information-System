@@ -27,3 +27,5 @@
 - Filtering rows are processed by selecting the column of the data you want to search/filter using the combo box, then entering the data in the text field, finally clicking the "Search" button.
 - Some if not all actions have a popup notifying/warning you of what they will do, just confirm or cancel.
 - To count how many items are listed in the tables, right-click the tables then select "Student Count" for the student table and "Course Count" for the course table.
+- To count how many students are unenrolled, right-click the course table then select "Unenrolled Students".
+- To count how many students are enrolled in a course, select a course, right-click the course table, then select "Student Enrolled".

@@ -63,6 +63,9 @@ public class SSISMainDisplay extends JFrame {
     private JTable course_table;
     private static JTable display_table;
 
+    // check if the table is filtered
+    private static boolean isTableFiltered = false;
+
     public SSISMainDisplay() {
         // basic layouts for the frame display
         this.setTitle("Simple Student Information System (SSIS)");
@@ -140,6 +143,9 @@ public class SSISMainDisplay extends JFrame {
                 students_button.setEnabled(false);
                 courses_button.setEnabled(true);
 
+                Filter_Data.cancelFilter(display_table); // cancel the filter
+                isTableFiltered = false;
+
                 display_table.getSelectionModel().clearSelection(); // clear the previous table selection
                 display_table = student_table; // change the table to be displayed
                 refreshTable(); // refresh the display table
@@ -159,6 +165,9 @@ public class SSISMainDisplay extends JFrame {
                 // to prevent confusion to what table currently displayed
                 courses_button.setEnabled(false);
                 students_button.setEnabled(true);
+
+                Filter_Data.cancelFilter(display_table); // cancel the filter
+                isTableFiltered = false;
 
                 display_table.getSelectionModel().clearSelection(); // clear the previous table selection
                 display_table = course_table; // change the table to be displayed
@@ -208,8 +217,15 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(SSISMainDisplay.this, "Please select a row.", "Edit Data Error",
                             JOptionPane.DEFAULT_OPTION);
                 // display the edit_dialog
-                else
-                    new Edit_Dialog(display_table, SSISMainDisplay.this).setVisible(true);
+                else {
+                    if (isTableFiltered) {
+                        // if the table is filtered, replicate in the edit process
+                        new Edit_Dialog(display_table, SSISMainDisplay.this, column_names.getSelectedIndex() - 1,
+                                search_input.getText().toString()).setVisible(true);
+                    } else {
+                        new Edit_Dialog(display_table, SSISMainDisplay.this, -1, "").setVisible(true);
+                    }
+                }
             }
         });
         option_panel.add(edit_button);
@@ -239,11 +255,26 @@ public class SSISMainDisplay extends JFrame {
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Filter_Data.cancelFilter(display_table); // cancel the filter
-                // process the saving of the table data to csv files
-                Data_Manager.courseFileSaver();
-                Data_Manager.studentFileSaver();
+                // don't unfilter when saving
+                if (isTableFiltered) {
+                    // store the filtering information
+                    String filter_input = search_input.getText().toString();
+                    int filter_column = column_names.getSelectedIndex() - 1;
 
+                    Filter_Data.cancelFilter(display_table); // cancel the filter
+                    // process the saving of the table data to csv files
+                    Data_Manager.courseFileSaver();
+                    Data_Manager.studentFileSaver();
+
+                    // filter again
+                    Filter_Data.rowFilter(display_table, filter_input, filter_column);
+                } else {
+                    // process the saving of the table data to csv files
+                    Data_Manager.courseFileSaver();
+                    Data_Manager.studentFileSaver();
+                }
+
+                // confirmation
                 JOptionPane.showConfirmDialog(SSISMainDisplay.this, "Tables Saved.", "Saving Tables",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -283,9 +314,9 @@ public class SSISMainDisplay extends JFrame {
         column_names.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // turn off the filtering when no column is selected
-                if (column_names.getSelectedIndex() == 0)
-                    Filter_Data.cancelFilter(display_table); // cancel the filter
+                // turn off the filtering when selected column is changed
+                Filter_Data.cancelFilter(display_table); // cancel the filter
+                isTableFiltered = false;
             }
         });
 
@@ -318,6 +349,7 @@ public class SSISMainDisplay extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Filter_Data.cancelFilter(display_table); // cancel the filter
+                isTableFiltered = false;
 
                 // secure that something is inputted to be search and a column is selected
                 if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
@@ -326,8 +358,10 @@ public class SSISMainDisplay extends JFrame {
                 else if (search_input.getText().equals("") || search_input.getText().equals("Search Here"))
                     JOptionPane.showMessageDialog(SSISMainDisplay.this, "Enter something to search.", "Empty Search",
                             JOptionPane.CLOSED_OPTION);
-                else
+                else {
                     Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex() - 1);
+                    isTableFiltered = true;
+                }
             }
         });
 

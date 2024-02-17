@@ -19,9 +19,14 @@ public class Edit_Process {
     private JDialog edit_dialog;
     private boolean theresDuplicate;
 
-    public Edit_Process(JTable table, JDialog edit_dialog) {
+    private int filter_column;
+    private String filter_input;
+
+    public Edit_Process(JTable table, JDialog edit_dialog, int filter_column, String filter_input) {
         this.table = table;
         this.edit_dialog = edit_dialog;
+        this.filter_column = filter_column;
+        this.filter_input = filter_input;
     }
 
     /**
@@ -96,7 +101,11 @@ public class Edit_Process {
             }
         }
 
-        Filter_Data.cancelFilter(student_table); // cancel the filter
+        // if the table is filtered, replicate the filter
+        if (filter_column >= 0)
+            Filter_Data.rowFilter(student_table, this.filter_input, this.filter_column);
+        else
+            Filter_Data.cancelFilter(student_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
@@ -194,7 +203,10 @@ public class Edit_Process {
             }
         }
 
-        Filter_Data.cancelFilter(course_table); // cancel the filter
+        if (filter_column >= 0)
+            Filter_Data.rowFilter(course_table, this.filter_input, this.filter_column);
+        else
+            Filter_Data.cancelFilter(course_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
@@ -226,7 +238,10 @@ public class Edit_Process {
                 JTable student_table = Table_Manager.getStudentTable();
                 String old_course_code = course_table.getValueAt(table_row_selected, 0).toString();
 
-                // traverse the student table since the jtable doesn't update automatically
+                /*
+                 * Filter and traverse the student table since the jtable doesn't update
+                 * automatically.
+                 */
                 Filter_Data.rowFilter(student_table, old_course_code, 6);
                 for (int student_row_count = 0; student_row_count < student_table.getRowCount(); student_row_count++) {
                     student_table.setValueAt(new_course_code, student_row_count, 6);
