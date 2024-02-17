@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import javax.swing.JTable;
@@ -44,7 +45,7 @@ public class Data_Manager {
     private void studentFileReader() {
         try {
             // setup the reader
-            reader = new BufferedReader(new FileReader(student_file));
+            reader = new BufferedReader(new FileReader(student_file, StandardCharsets.UTF_8));
 
             // save the column names
             student_column = reader.readLine().split(",");
@@ -94,7 +95,7 @@ public class Data_Manager {
         courses.put(unenrolled_course.getCourseCode(), unenrolled_course);
         try {
             // setup the reader
-            reader = new BufferedReader(new FileReader(course_file));
+            reader = new BufferedReader(new FileReader(course_file, StandardCharsets.UTF_8));
             course_column = reader.readLine().split(",");
 
             while ((line = reader.readLine()) != null) {
@@ -126,7 +127,7 @@ public class Data_Manager {
         try {
             // setup the table and the writer
             JTable course_table = Table_Manager.getCourseTable();
-            FileWriter writer = new FileWriter(new File(course_file));
+            FileWriter writer = new FileWriter(new File(course_file), StandardCharsets.UTF_8);
 
             // save the column names first
             for (int column = 0; column < course_table.getColumnCount(); column++) {
@@ -135,17 +136,16 @@ public class Data_Manager {
                 else
                     writer.write(course_table.getColumnName(column) + ",");
             }
-            writer.write("\n");
 
             // save the data from the table
             for (int row = 0; row < course_table.getRowCount(); row++) {
+                writer.write("\n");
                 for (int column = 0; column < course_table.getColumnCount(); column++) {
                     if (column == course_table.getColumnCount() - 1)
                         writer.write(course_table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
                         writer.write(course_table.getValueAt(row, column).toString() + ",");
                 }
-                writer.write("\n");
             }
             writer.close();
         } catch (IOException e) {
@@ -161,7 +161,7 @@ public class Data_Manager {
         try {
             // setup the table and the writer
             JTable student_table = Table_Manager.getStudentTable();
-            FileWriter writer = new FileWriter(new File(student_file));
+            FileWriter writer = new FileWriter(new File(student_file), StandardCharsets.UTF_8);
 
             // save the column names first
             for (int column = 0; column < student_table.getColumnCount(); column++) {
@@ -170,17 +170,16 @@ public class Data_Manager {
                 else
                     writer.write(student_table.getColumnName(column) + ",");
             }
-            writer.write("\n");
 
             // save the data from the table
             for (int row = 0; row < student_table.getRowCount(); row++) {
+                writer.write("\n");
                 for (int column = 0; column < student_table.getColumnCount(); column++) {
                     if (column == student_table.getColumnCount() - 1)
                         writer.write(student_table.getValueAt(row, column).toString()); // to avoid ',' in the end
                     else
                         writer.write(student_table.getValueAt(row, column).toString() + ",");
                 }
-                writer.write("\n");
             }
             writer.close();
         } catch (IOException e) {
