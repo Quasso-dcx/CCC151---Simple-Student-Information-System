@@ -117,7 +117,7 @@ public class Edit_Process {
             String old_student_key = new StudentKeyMaker().keyMaker(course_key, ID_num);
             Student editing_student = Data_Manager.studentList().get(old_student_key);
 
-            // change the atributes
+            // change the attributes
             editing_student.setSurname(new_surname);
             editing_student.setFirstName(new_first_name);
             editing_student.setMiddleName(new_middle_name);
@@ -127,7 +127,8 @@ public class Edit_Process {
             editing_student.setCourseCode(new_course_code);
 
             /*
-             * If the course and/or the ID number of the student has been changed, unenroll
+             * If the course and/or the ID number of the student has been changed,
+             * unenrolled
              * from its previous course then enroll to its new.
              */
             if (!student_table.getValueAt(table_row_selected, 6).equals(new_course_code)
@@ -239,7 +240,7 @@ public class Edit_Process {
                 String old_course_code = course_table.getValueAt(table_row_selected, 0).toString();
 
                 /*
-                 * Filter and traverse the student table since the jtable doesn't update
+                 * Filter and traverse the student table since the JTable doesn't update
                  * automatically.
                  */
                 Filter_Data.rowFilter(student_table, old_course_code, 6);

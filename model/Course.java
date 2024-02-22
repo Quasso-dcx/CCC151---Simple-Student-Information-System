@@ -35,7 +35,7 @@ public class Course {
     }
 
     /**
-     * Check if the block is empyty.
+     * Check if the block is empty.
      * 
      * @return true if the block is empty, otherwise false.
      */
@@ -74,13 +74,13 @@ public class Course {
                     unenrolled_student.getIDNumber());
 
             /*
-             * Update the key of the student in the hasmap by removing it then adding it
+             * Update the key of the student in the hashmap by removing it then adding it
              * again with a different key.
              */
             Data_Manager.studentList().remove(unenrolled_student_key);
             Data_Manager.studentList().put(new_student_key, unenrolled_student);
         }
 
-        block_ID.clear(); // after transfering the students, clear the list
+        block_ID.clear(); // after transferring the students, clear the list
     }
 }

@@ -42,13 +42,13 @@ public class Delete_Process {
         String course_key = student_table.getValueAt(table_row_selected, 6).toString();
         Course course = Data_Manager.coursesList().get(course_key);
 
-        // ask for confimation
-        int choosen = JOptionPane.showConfirmDialog(main,
+        // ask for confirmation
+        int chosen = JOptionPane.showConfirmDialog(main,
                 "Currently enrolled in: " + course.getCourseCode() + ".\nDelete?", "Delete Confirmation",
                 JOptionPane.OK_CANCEL_OPTION);
 
-        // if the choosen option is not okay, cancel the action
-        if (choosen != JOptionPane.OK_OPTION) {
+        // if the chosen option is not okay, cancel the action
+        if (chosen != JOptionPane.OK_OPTION) {
             return;
         }
 
@@ -98,13 +98,13 @@ public class Delete_Process {
         String course_key = course_table.getValueAt(table_row_selected, 0).toString();
         Course course = Data_Manager.coursesList().get(course_key);
 
-        // ask for confimation
-        int choosen = JOptionPane.showConfirmDialog(main,
+        // ask for confirmation
+        int chosen = JOptionPane.showConfirmDialog(main,
                 "Currently enrolled: " + course.getBlockIDs().size() + " \nDelete?", "Delete Confirmation",
                 JOptionPane.OK_CANCEL_OPTION);
 
-        // if the choosen option is not okay, cancel the action
-        if (choosen != JOptionPane.OK_OPTION) {
+        // if the chosen option is not okay, cancel the action
+        if (chosen != JOptionPane.OK_OPTION) {
             return;
         }
 

@@ -55,7 +55,7 @@ public class Data_Manager {
                 // split the lines per column from writer
                 String[] row = line.split(",");
 
-                // incase there is not enought split words
+                // incase there is not enough split words
                 if (row.length != student_column.length) {
                     for (String word : row)
                         System.out.printf("%-15s", word);
@@ -63,7 +63,7 @@ public class Data_Manager {
                     continue;
                 }
 
-                // incase the course recorded was deleted orsomething happened
+                // incase the course recorded was deleted or something happened
                 Course course = unenrolled_course;
                 if (courses.containsKey(row[6])) {
                     course = courses.get(row[6]);
@@ -102,7 +102,7 @@ public class Data_Manager {
                 // split the lines per column from writer
                 String[] row = line.replaceAll("\"", "").split(",");
 
-                // incase there is not enought split words
+                // incase there is not enough split words
                 if (row.length != course_column.length) {
                     for (String word : row)
                         System.out.printf("%-15s", word);

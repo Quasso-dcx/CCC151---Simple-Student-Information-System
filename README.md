@@ -3,7 +3,7 @@
 > # Description
 > This is the repository for the 2nd Assignment for the subject CCC151.
 > 
-> ## Timeframe
+> ## Time Frame
 > Deadline: Feb. 23, 2024 <br>
 > Starting: Jan. 31, 2024 
 > 
@@ -13,8 +13,8 @@
 
 # Reminders
 - Avoid directly editing/manipulating/deleting the CSV files to prevent errors. The app is not designed to handle these errors as it treats the CVS files as databases that can't be touched.
-- The tables can only (as of the moment) display relationship between datas found in the CSV files, add, edit, and delete data/row, check for duplicates, filter data/row. Other functionalities found in some databases are not supported and/or still working in progress.
-- The project is still not finalized, the designs/functionalities may or may not be subject to change.
+- The tables can only (as of the moment) display relationship between data found in the CSV files, add, edit, and delete data/row, check for duplicates, filter data/row. Other functionalities found in some databases are not supported.
+- The project is finished, but the designs/functionalities still may or may not be subject to change.
 
 # How to use
 - Upon loading the app, the tables and functionality buttons are all present and in view.

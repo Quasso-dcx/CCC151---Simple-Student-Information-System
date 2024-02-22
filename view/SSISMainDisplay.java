@@ -255,7 +255,7 @@ public class SSISMainDisplay extends JFrame {
         save_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // don't unfilter when saving
+                // don't filter the table when saving
                 if (isTableFiltered) {
                     // store the filtering information
                     String filter_input = search_input.getText().toString();

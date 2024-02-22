@@ -125,7 +125,7 @@ public class Add_Dialog extends JDialog {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // check if there is atleast one field empty
+                // check if there is at least one field empty
                 if (course_code_data.getText().isEmpty() || course_name_data.getText().isEmpty())
                     JOptionPane.showMessageDialog(Add_Dialog.this, "Fill all fields.");
                 // add the new data to the table then close the dialog
@@ -251,7 +251,7 @@ public class Add_Dialog extends JDialog {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // check if there is atleast one field empty
+                // check if there is at least one field empty
                 if (surname_data.getText().isEmpty() || first_name_data.getText().isEmpty() ||
                         middle_name_data.getText().isEmpty() || ID_number_data.getText().isEmpty() ||
                         gender_data.getText().isEmpty())
