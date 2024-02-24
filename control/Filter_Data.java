@@ -20,7 +20,23 @@ public class Filter_Data {
     }
 
     /**
-     * Filter the tables based on the input of the user.
+     * Filter the tables based on a regex following the parameter.
+     * 
+     * @param table
+     * @param input_search
+     * @param column_index
+     */
+    public static void regexFilter(JTable table, String input_search, int column_index) {
+        def_model = (DefaultTableModel) table.getModel();
+        row_sorter = new TableRowSorter<DefaultTableModel>(def_model);
+        table.setRowSorter(row_sorter);
+        table.getRowSorter().toggleSortOrder(0); // to still sort the filtered data based on the first column
+
+        row_sorter.setRowFilter(RowFilter.regexFilter(input_search, column_index));
+    }
+
+    /**
+     * Filter the tables based on the exact parameter.
      * 
      * @param table
      * @param input_search

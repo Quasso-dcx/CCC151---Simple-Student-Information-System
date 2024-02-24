@@ -70,7 +70,7 @@ public class Edit_Process {
 
             // if the remaining row and selected row are not the same
             if (!Arrays.equals(remaining_row, selected_row)) {
-                JOptionPane.showMessageDialog(student_table,
+                JOptionPane.showMessageDialog(this.edit_dialog,
                         "Student: " + new_surname + ", " + new_first_name + " " + new_middle_name
                                 + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -92,7 +92,7 @@ public class Edit_Process {
 
                 // if the remaining row and selected row are not the same
                 if (!Arrays.equals(remaining_row, selected_row)) {
-                    JOptionPane.showMessageDialog(student_table,
+                    JOptionPane.showMessageDialog(this.edit_dialog,
                             "ID Number: " + new_ID_number
                                     + "\nalready belongs to another student.",
                             "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
@@ -103,7 +103,7 @@ public class Edit_Process {
 
         // if the table is filtered, replicate the filter
         if (filter_column >= 0)
-            Filter_Data.rowFilter(student_table, this.filter_input, this.filter_column);
+            Filter_Data.regexFilter(student_table, this.filter_input, this.filter_column);
         else
             Filter_Data.cancelFilter(student_table);
 
@@ -163,7 +163,7 @@ public class Edit_Process {
 
             // for confirmation
             JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
-            edit_dialog.dispose();
+            this.edit_dialog.dispose();
         }
     }
 
@@ -184,7 +184,7 @@ public class Edit_Process {
          */
         if (Data_Manager.coursesList().containsKey(new_course_code)
                 && !course_table.getValueAt(table_row_selected, 0).equals(new_course_code)) {
-            JOptionPane.showMessageDialog(table, "Course Code: " + new_course_code + "\nalready exist.",
+            JOptionPane.showMessageDialog(this.edit_dialog, "Course Code: " + new_course_code + "\nalready exist.",
                     "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
             theresDuplicate = true;
         }
@@ -198,14 +198,15 @@ public class Edit_Process {
             Filter_Data.rowFilter(course_table, new_course_name, 1);
             // if there are still rows remaining, it means there is a duplicate
             if (course_table.getRowCount() > 0) {
-                JOptionPane.showMessageDialog(course_table, "Course Name: " + new_course_name + "\nalready exist.",
+                JOptionPane.showMessageDialog(this.edit_dialog, "Course Name: " + new_course_name + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
                 theresDuplicate = true;
             }
         }
 
+        // if the table is filtered, replicate the filter
         if (filter_column >= 0)
-            Filter_Data.rowFilter(course_table, this.filter_input, this.filter_column);
+            Filter_Data.regexFilter(course_table, new_course_name, table_row_selected);
         else
             Filter_Data.cancelFilter(course_table);
 
@@ -267,7 +268,7 @@ public class Edit_Process {
 
             // for confirmation
             JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
-            edit_dialog.dispose();
+            this.edit_dialog.dispose();
         }
     }
 }

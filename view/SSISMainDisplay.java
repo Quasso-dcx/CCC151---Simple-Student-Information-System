@@ -66,6 +66,10 @@ public class SSISMainDisplay extends JFrame {
     // check if the table is filtered
     private static boolean isTableFiltered = false;
 
+    // store the filtering information, set the default values
+    private static String filter_input = "";
+    private static int filter_column = -1;
+
     public SSISMainDisplay() {
         // basic layouts for the frame display
         this.setTitle("Simple Student Information System (SSIS)");
@@ -145,6 +149,9 @@ public class SSISMainDisplay extends JFrame {
 
                 Filter_Data.cancelFilter(display_table); // cancel the filter
                 isTableFiltered = false;
+                // return to their default values
+                filter_input = "";
+                filter_column = -1;
 
                 display_table.getSelectionModel().clearSelection(); // clear the previous table selection
                 display_table = student_table; // change the table to be displayed
@@ -168,6 +175,9 @@ public class SSISMainDisplay extends JFrame {
 
                 Filter_Data.cancelFilter(display_table); // cancel the filter
                 isTableFiltered = false;
+                // return to their default values
+                filter_input = "";
+                filter_column = -1;
 
                 display_table.getSelectionModel().clearSelection(); // clear the previous table selection
                 display_table = course_table; // change the table to be displayed
@@ -218,13 +228,7 @@ public class SSISMainDisplay extends JFrame {
                             JOptionPane.DEFAULT_OPTION);
                 // display the edit_dialog
                 else {
-                    if (isTableFiltered) {
-                        // if the table is filtered, replicate in the edit process
-                        new Edit_Dialog(display_table, SSISMainDisplay.this, column_names.getSelectedIndex() - 1,
-                                search_input.getText().toString()).setVisible(true);
-                    } else {
-                        new Edit_Dialog(display_table, SSISMainDisplay.this, -1, "").setVisible(true);
-                    }
+                    new Edit_Dialog(display_table, SSISMainDisplay.this, filter_column, filter_input).setVisible(true);
                 }
             }
         });
@@ -257,17 +261,14 @@ public class SSISMainDisplay extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // don't filter the table when saving
                 if (isTableFiltered) {
-                    // store the filtering information
-                    String filter_input = search_input.getText().toString();
-                    int filter_column = column_names.getSelectedIndex() - 1;
-
                     Filter_Data.cancelFilter(display_table); // cancel the filter
+
                     // process the saving of the table data to csv files
                     Data_Manager.courseFileSaver();
                     Data_Manager.studentFileSaver();
 
                     // filter again
-                    Filter_Data.rowFilter(display_table, filter_input, filter_column);
+                    Filter_Data.regexFilter(display_table, filter_input, filter_column);
                 } else {
                     // process the saving of the table data to csv files
                     Data_Manager.courseFileSaver();
@@ -350,6 +351,9 @@ public class SSISMainDisplay extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Filter_Data.cancelFilter(display_table); // cancel the filter
                 isTableFiltered = false;
+                // return to their default values
+                filter_input = "";
+                filter_column = -1;
 
                 // secure that something is inputted to be search and a column is selected
                 if (column_names.getSelectedItem().equals(column_names.getItemAt(0)))
@@ -359,7 +363,11 @@ public class SSISMainDisplay extends JFrame {
                     JOptionPane.showMessageDialog(SSISMainDisplay.this, "Enter something to search.", "Empty Search",
                             JOptionPane.CLOSED_OPTION);
                 else {
-                    Filter_Data.rowFilter(display_table, search_input.getText(), column_names.getSelectedIndex() - 1);
+                    // store the filter information when available
+                    filter_input = search_input.getText().toString();
+                    filter_column = column_names.getSelectedIndex() - 1;
+
+                    Filter_Data.regexFilter(display_table, filter_input, filter_column);
                     isTableFiltered = true;
                 }
             }

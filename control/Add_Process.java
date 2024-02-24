@@ -68,8 +68,6 @@ public class Add_Process {
             }
         }
 
-        Filter_Data.cancelFilter(this.table); // cancel the filter
-
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
             // get the course of the new student
@@ -92,8 +90,12 @@ public class Add_Process {
                     new Object[] { surname_data, first_name_data, middle_name_data, ID_number_data,
                             year_level_data, gender_data, course_code_data });
 
+            // display the newly added row
+            Filter_Data.rowFilter(this.table, ID_number_data, 3);
+
             // for confirmation
             JOptionPane.showMessageDialog(this.add_dialog, "Add Success.");
+            Filter_Data.cancelFilter(this.table);
             this.add_dialog.dispose();
         }
     }
@@ -132,8 +134,6 @@ public class Add_Process {
             }
         }
 
-        Filter_Data.cancelFilter(this.table); // cancel the filter
-
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
             // put the new course and its key to the course hashmap
@@ -142,8 +142,12 @@ public class Add_Process {
             // add a new row to the course table
             table_model.addRow(new Object[] { course_code_data, course_name_data });
 
+            // display the newly added row
+            Filter_Data.rowFilter(this.table, course_code_data, 0);
+
             // for confirmation
             JOptionPane.showMessageDialog(this.add_dialog, "Add Success.");
+            Filter_Data.cancelFilter(this.table);
             this.add_dialog.dispose();
         }
     }

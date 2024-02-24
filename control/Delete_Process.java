@@ -78,6 +78,10 @@ public class Delete_Process {
                     && student_table_model.getValueAt(row_count, 3)
                             .equals(student_table.getValueAt(table_row_selected, 3))) {
                 student_table_model.removeRow(row_count);
+
+                // for confirmation
+                JOptionPane.showConfirmDialog(main,
+                        "Student " + student_table.getValueAt(table_row_selected, 3) + " removed.");
                 break;
             }
         }
@@ -143,6 +147,11 @@ public class Delete_Process {
                 Filter_Data.cancelFilter(student_table);
 
                 course_table_model.removeRow(row_count); // remove the selected row from the course table
+
+                // for confirmation
+                JOptionPane.showConfirmDialog(main,
+                        "Course " + course_table.getValueAt(table_row_selected, 0) + " removed.");
+
                 break;
             }
 
