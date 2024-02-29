@@ -26,6 +26,8 @@ public class Delete_Process {
 
     /**
      * If the row to be deleted is in the student table.
+     * 
+     * @param main
      */
     private void studentDelete(JFrame main) {
         // get the table of the student data and its model
@@ -77,11 +79,13 @@ public class Delete_Process {
                             .equals(student_table.getValueAt(table_row_selected, 2))
                     && student_table_model.getValueAt(row_count, 3)
                             .equals(student_table.getValueAt(table_row_selected, 3))) {
+
+                String deleted_student_ID = student_table.getValueAt(table_row_selected, 3).toString();
                 student_table_model.removeRow(row_count);
 
                 // for confirmation
-                JOptionPane.showConfirmDialog(main,
-                        "Student " + student_table.getValueAt(table_row_selected, 3) + " removed.");
+                JOptionPane.showConfirmDialog(main, "Student " + deleted_student_ID + " removed.", "Student Deleted",
+                        JOptionPane.CLOSED_OPTION);
                 break;
             }
         }
@@ -89,6 +93,8 @@ public class Delete_Process {
 
     /**
      * If the row to be deleted is in the course table.
+     * 
+     * @param main
      */
     private void courseDelete(JFrame main) {
         // get the table of the course data and its model
@@ -146,11 +152,12 @@ public class Delete_Process {
                 }
                 Filter_Data.cancelFilter(student_table);
 
+                String deleted_course_code = student_table.getValueAt(table_row_selected, 3).toString();
                 course_table_model.removeRow(row_count); // remove the selected row from the course table
 
                 // for confirmation
-                JOptionPane.showConfirmDialog(main,
-                        "Course " + course_table.getValueAt(table_row_selected, 0) + " removed.");
+                JOptionPane.showConfirmDialog(main, "Course " + deleted_course_code + " removed.", "Course Deleted",
+                        JOptionPane.CLOSED_OPTION);
 
                 break;
             }

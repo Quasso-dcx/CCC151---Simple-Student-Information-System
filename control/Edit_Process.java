@@ -43,10 +43,9 @@ public class Edit_Process {
      */
     public void studentEdit(int table_row_selected, String new_surname, String new_first_name, String new_middle_name,
             String new_ID_number, String new_year_level, String new_gender, String new_course_code) {
-
         JTable student_table = this.table;
-
         theresDuplicate = false;
+
         /*
          * Filter the table and check if there are rows with the same name as the edit
          * student. Also, check if the attribute of the student is not the same with the
@@ -59,6 +58,7 @@ public class Edit_Process {
 
         String[] remaining_row = new String[student_table.getColumnCount()]; // remaining row after filtering
 
+        // filter the fullname
         String[] column_data = { new_surname, new_first_name, new_middle_name };
         int[] column_indices = { 0, 1, 2 };
         Filter_Data.multipleFilter(student_table, column_data, column_indices);
@@ -101,11 +101,7 @@ public class Edit_Process {
             }
         }
 
-        // if the table is filtered, replicate the filter
-        if (filter_column >= 0)
-            Filter_Data.regexFilter(student_table, this.filter_input, this.filter_column);
-        else
-            Filter_Data.cancelFilter(student_table);
+        Filter_Data.cancelFilter(student_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
@@ -152,14 +148,23 @@ public class Edit_Process {
                 new_course.getBlockIDs().add(new_ID_number); // enroll student to the new course
             }
 
+            // Tables are need to be filtered because of sorting.
+            Filter_Data.rowFilter(student_table, selected_row[3], 3);
+
             // change the values in the row of the edited course
-            student_table.setValueAt(new_surname, table_row_selected, 0);
-            student_table.setValueAt(new_first_name, table_row_selected, 1);
-            student_table.setValueAt(new_middle_name, table_row_selected, 2);
-            student_table.setValueAt(new_ID_number, table_row_selected, 3);
-            student_table.setValueAt(new_year_level, table_row_selected, 4);
-            student_table.setValueAt(new_gender, table_row_selected, 5);
-            student_table.setValueAt(new_course_code, table_row_selected, 6);
+            student_table.setValueAt(new_surname, 0, 0);
+            student_table.setValueAt(new_first_name, 0, 1);
+            student_table.setValueAt(new_middle_name, 0, 2);
+            student_table.setValueAt(new_ID_number, 0, 3);
+            student_table.setValueAt(new_year_level, 0, 4);
+            student_table.setValueAt(new_gender, 0, 5);
+            student_table.setValueAt(new_course_code, 0, 6);
+
+            // if the table is filtered, replicate the filter
+            if (filter_column >= 0)
+                Filter_Data.regexFilter(student_table, this.filter_input, this.filter_column);
+            else
+                Filter_Data.cancelFilter(student_table);
 
             // for confirmation
             JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
@@ -178,12 +183,19 @@ public class Edit_Process {
         JTable course_table = this.table;
         theresDuplicate = false;
 
+        theresDuplicate = false;
+        // Get the original values.
+        String[] selected_row = new String[course_table.getColumnCount()];
+        for (int column = 0; column < course_table.getColumnCount(); column++) {
+            selected_row[column] = course_table.getValueAt(table_row_selected, column).toString();
+        }
+
         /*
          * Since the course code is the key for every course, check if there is already
          * the same key in the hashmap and if it is changed.
          */
         if (Data_Manager.coursesList().containsKey(new_course_code)
-                && !course_table.getValueAt(table_row_selected, 0).equals(new_course_code)) {
+                && !selected_row[0].equals(new_course_code)) {
             JOptionPane.showMessageDialog(this.edit_dialog, "Course Code: " + new_course_code + "\nalready exist.",
                     "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
             theresDuplicate = true;
@@ -197,26 +209,26 @@ public class Edit_Process {
         if (!theresDuplicate && !course_table.getValueAt(table_row_selected, 1).equals(new_course_name)) {
             Filter_Data.rowFilter(course_table, new_course_name, 1);
             // if there are still rows remaining, it means there is a duplicate
-            if (course_table.getRowCount() > 0) {
-                JOptionPane.showMessageDialog(this.edit_dialog, "Course Name: " + new_course_name + "\nalready exist.",
+            if ((course_table.getRowCount() > 0) && (!course_table.getValueAt(0, 1).equals(selected_row[1]))) {
+                JOptionPane.showMessageDialog(this.edit_dialog,
+                        "Course Name: " + new_course_name + "\nalready exist.",
                         "Duplication of Entry", JOptionPane.ERROR_MESSAGE);
                 theresDuplicate = true;
             }
         }
 
-        // if the table is filtered, replicate the filter
-        if (filter_column >= 0)
-            Filter_Data.regexFilter(course_table, new_course_name, table_row_selected);
-        else
-            Filter_Data.cancelFilter(course_table);
+        Filter_Data.cancelFilter(course_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
+            // Tables are need to be filtered because of sorting.
+            Filter_Data.multipleFilter(course_table, selected_row, new int[] { 0, 1 });
+
             // get the course to be edited
-            Course editing_course = Data_Manager.coursesList().get(course_table.getValueAt(table_row_selected, 0));
+            Course editing_course = Data_Manager.coursesList().get(course_table.getValueAt(0, 0));
 
             // if the course code was edited
-            if (!course_table.getValueAt(table_row_selected, 0).equals(new_course_code)) {
+            if (!selected_row[0].equals(new_course_code)) {
                 // change the attributes for course code of every student inside the course
                 for (String ID_num : editing_course.getBlockIDs()) {
                     // get the student
@@ -238,7 +250,7 @@ public class Edit_Process {
 
                 // change the course code in student table
                 JTable student_table = Table_Manager.getStudentTable();
-                String old_course_code = course_table.getValueAt(table_row_selected, 0).toString();
+                String old_course_code = course_table.getValueAt(0, 0).toString();
 
                 /*
                  * Filter and traverse the student table since the JTable doesn't update
@@ -254,17 +266,23 @@ public class Edit_Process {
                 Data_Manager.coursesList().remove(old_course_code); // remove the old map
                 Data_Manager.coursesList().put(new_course_code, editing_course); // add the new map w/ the edited key
 
-                course_table.setValueAt(new_course_code, table_row_selected, 0); // change the code in the course table
+                course_table.setValueAt(new_course_code, 0, 0); // change the code in the course table
             }
 
             // change the course name of the edited course if changed
-            if (!course_table.getValueAt(table_row_selected, 1).equals(new_course_name)) {
+            if (!selected_row[1].equals(new_course_name)) {
                 editing_course = Data_Manager.coursesList().get(new_course_code);
 
                 editing_course.setCourseName(new_course_name); // change the course name
 
-                course_table.setValueAt(new_course_name, table_row_selected, 1); // change the name in course table
+                course_table.setValueAt(new_course_name, 0, 1); // change the name in course table
             }
+
+            // if the table is filtered, replicate the filter
+            if (filter_column >= 0)
+                Filter_Data.regexFilter(course_table, new_course_name, table_row_selected);
+            else
+                Filter_Data.cancelFilter(course_table);
 
             // for confirmation
             JOptionPane.showMessageDialog(this.edit_dialog, "Edit Success.");
