@@ -26,6 +26,9 @@ import javax.swing.SwingConstants;
 import control.Data_Manager;
 import control.Delete_Process;
 import control.Filter_Data;
+import model.Course;
+import model.Student;
+import model.StudentKeyMaker;
 import model.Table_Manager;
 
 /**
@@ -101,6 +104,19 @@ public class SSISMainDisplay extends JFrame {
                 }
                 if (confirm == JOptionPane.NO_OPTION)
                     System.exit(0);
+
+                // for checking only, display everything
+                for (Course course : Data_Manager.coursesList().values()) {
+                    System.out.println(course.getCourseCode() + " - " + course.getCourseName());
+                    for (String ID : course.getBlockIDs()) {
+                        String student_key = new StudentKeyMaker().keyMaker(course.getCourseCode(), ID);
+                        Student student = Data_Manager.studentList().get(student_key);
+                        System.out.println("\t " + student.getSurname() + ", " + student.getFirstName() + " - "
+                                + student_key);
+                    }
+                }
+                System.out.println(
+                        "---------------------------------------------------------------------------------------------------------------");
             }
         };
         this.addWindowListener(exitListener);

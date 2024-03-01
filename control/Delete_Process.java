@@ -152,7 +152,7 @@ public class Delete_Process {
                 }
                 Filter_Data.cancelFilter(student_table);
 
-                String deleted_course_code = student_table.getValueAt(table_row_selected, 3).toString();
+                String deleted_course_code = course_table.getValueAt(table_row_selected, 0).toString();
                 course_table_model.removeRow(row_count); // remove the selected row from the course table
 
                 // for confirmation

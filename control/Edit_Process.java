@@ -101,13 +101,14 @@ public class Edit_Process {
             }
         }
 
-        Filter_Data.cancelFilter(student_table);
-
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
+            // Tables are need to be filtered because of sorting.
+            Filter_Data.rowFilter(student_table, selected_row[3], 3);
+
             // get the old course key of the student and its ID number
-            String course_key = student_table.getValueAt(table_row_selected, 6).toString();
-            String ID_num = student_table.getValueAt(table_row_selected, 3).toString();
+            String course_key = student_table.getValueAt(0, 6).toString();
+            String ID_num = student_table.getValueAt(0, 3).toString();
 
             // get the student
             String old_student_key = new StudentKeyMaker().keyMaker(course_key, ID_num);
@@ -124,14 +125,12 @@ public class Edit_Process {
 
             /*
              * If the course and/or the ID number of the student has been changed,
-             * unenrolled
-             * from its previous course then enroll to its new.
+             * unenrolled from its previous course then enroll to its new. Also change
+             * the key of the student.
              */
-            if (!student_table.getValueAt(table_row_selected, 6).equals(new_course_code)
-                    || !student_table.getValueAt(table_row_selected, 3).equals(new_ID_number)) {
+            if (!selected_row[3].equals(new_ID_number) || !selected_row[6].equals(new_course_code)) {
                 // create a new key
                 String new_student_key = new StudentKeyMaker().keyMaker(new_course_code, new_ID_number);
-
                 // get the old course of the student
                 Course old_course = Data_Manager.coursesList().get(course_key);
                 // get the new course of the student
@@ -147,9 +146,6 @@ public class Edit_Process {
                 old_course.getBlockIDs().remove(ID_num); // remove student from the old course
                 new_course.getBlockIDs().add(new_ID_number); // enroll student to the new course
             }
-
-            // Tables are need to be filtered because of sorting.
-            Filter_Data.rowFilter(student_table, selected_row[3], 3);
 
             // change the values in the row of the edited course
             student_table.setValueAt(new_surname, 0, 0);
@@ -216,8 +212,6 @@ public class Edit_Process {
                 theresDuplicate = true;
             }
         }
-
-        Filter_Data.cancelFilter(course_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
