@@ -105,18 +105,20 @@ public class SSISMainDisplay extends JFrame {
                 if (confirm == JOptionPane.NO_OPTION)
                     System.exit(0);
 
-                // for checking only, display everything
-                for (Course course : Data_Manager.coursesList().values()) {
-                    System.out.println(course.getCourseCode() + " - " + course.getCourseName());
-                    for (String ID : course.getBlockIDs()) {
-                        String student_key = new StudentKeyMaker().keyMaker(course.getCourseCode(), ID);
-                        Student student = Data_Manager.studentList().get(student_key);
-                        System.out.println("\t " + student.getSurname() + ", " + student.getFirstName() + " - "
-                                + student_key);
+                if (confirm == JOptionPane.CANCEL_OPTION) {
+                    // for checking only, display everything
+                    for (Course course : Data_Manager.coursesList().values()) {
+                        System.out.println(course.getCourseCode() + " - " + course.getCourseName());
+                        for (String ID : course.getBlockIDs()) {
+                            String student_key = new StudentKeyMaker().keyMaker(course.getCourseCode(), ID);
+                            Student student = Data_Manager.studentList().get(student_key);
+                            System.out.println("\t " + student.getSurname() + ", " + student.getFirstName() + " - "
+                                    + student_key);
+                        }
                     }
+                    System.out.println(
+                            "---------------------------------------------------------------------------------------------------------------");
                 }
-                System.out.println(
-                        "---------------------------------------------------------------------------------------------------------------");
             }
         };
         this.addWindowListener(exitListener);

@@ -101,6 +101,8 @@ public class Edit_Process {
             }
         }
 
+        Filter_Data.cancelFilter(student_table);
+
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
             // Tables are need to be filtered because of sorting.
@@ -212,6 +214,8 @@ public class Edit_Process {
                 theresDuplicate = true;
             }
         }
+
+        Filter_Data.cancelFilter(course_table);
 
         // if there are no duplicates of the unique attributes
         if (!theresDuplicate) {
